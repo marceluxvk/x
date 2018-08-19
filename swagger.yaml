@@ -1,8 +1,9 @@
 swagger: '2.0'
 info:
   description: >-
-    This document is just a draft. You can require the final release by contacting the `bexs development team` directly.
-  version: 0.0.1 alpha
+    This document is just a draft. You can require the final release by
+    contacting the `bexs development team` directly.
+  version: 0.0.2 alpha
   title: BexsPay
   termsOfService: 'http://developer.bexpay.com/terms/'
   contact:
@@ -20,10 +21,12 @@ paths:
   /charges:
     post:
       summary: Charges the customer
-      description: The charge function enables you to charge the customer through card(credit or debit), slip or fund transference.
+      description: >-
+        The charge function enables you to charge the customer through
+        card(credit or debit), slip or fund transference.
       tags:
         - charge
-      parameters: 
+      parameters:
         - in: body
           name: charge
           required: false
@@ -45,7 +48,9 @@ paths:
   '/charges/{id}':
     get:
       summary: Retrieve data from a specific charge
-      description: Recover information about the charge specified in the path parameter ***id***
+      description: >-
+        Recover information about the charge specified in the path parameter
+        ***id***
       tags:
         - charge
       parameters:
@@ -62,9 +67,12 @@ paths:
   '/charges/{id}/capture':
     post:
       summary: This operation captures the total amount charged previously
-      description: Whether the charge specified is not confirmed previously, you can use this operation to confirm. Not confirmed transactions are not able to be paid and will not be available for clearing process.
+      description: >-
+        Whether the charge specified is not confirmed previously, you can use
+        this operation to confirm. Not confirmed transactions are not able to be
+        paid and will not be available for clearing process.
       tags:
-        - payment
+        - charge
       parameters:
         - name: id
           in: path
@@ -79,7 +87,11 @@ paths:
   '/charges/{id}/cancel':
     post:
       summary: Cancel the specified transaction
-      description: The Cancel operation is responsible for canceling and refund the customer on the same payment method. If it was payid by using transference or slip methods, the destination check account must indicate as part of the cancelling request body.
+      description: >-
+        The Cancel operation is responsible for canceling and refund the
+        customer on the same payment method. If it was payid by using
+        transference or slip methods, the destination check account must
+        indicate as part of the cancelling request body.
       tags:
         - charge
       parameters:
@@ -116,7 +128,9 @@ paths:
   '/transfers/{id}':
     patch:
       summary: Update transference information when needed
-      description: You are able to fix some invalid parameter or adjust amounts or even the transactions to be transfered by this request.
+      description: >-
+        You are able to fix some invalid parameter or adjust amounts or even the
+        transactions to be transfered by this request.
       tags:
         - transfer
       parameters:
@@ -157,7 +171,10 @@ paths:
   '/transfers/{id}/commit':
     post:
       summary: Confirm the exchange rate and term of calculated to the transfer.
-      description: After the evaluation and the exchange pricing process, the transfer request is able to be committed. It means that, the client has accepted the exchange rates as well as the term to overseas transferences.
+      description: >-
+        After the evaluation and the exchange pricing process, the transfer
+        request is able to be committed. It means that, the client has accepted
+        the exchange rates as well as the term to overseas transferences.
       tags:
         - transfer
       parameters:
@@ -170,14 +187,48 @@ paths:
           description: OK
   /balance:
     get:
-      summary: This api is used to inform the client about the current financial positions in its bexs account.
+      summary: >-
+        This api is used to inform the client about the current financial
+        positions in its bexs account.
       description: s
       tags:
-        - management
+        - backoffice
       responses:
         '200':
           description: OK
-  /token:
+  /analitycs:
+    get:
+      summary: d
+      description: d
+      tags:
+        - backoffice
+      responses:
+        '200':
+          description: OK
+  /customers:
+    post:
+      summary: Insert a customer into the bex db
+      description: x
+      responses:
+        '200':
+          description: OK
+      tags:
+        - customer
+  /customers/{id}:
+    get:
+      summary: Recover a customer
+      description: x
+      parameters: 
+        - in: path
+          name: id
+          type: string
+          required: true
+      responses:
+        '200':
+          description: ok
+      tags:
+        - customer
+  /tokens:
     post:
       summary: s
       description: s
@@ -194,7 +245,16 @@ paths:
       responses:
         '200':
           description: OK
-  /exchage:
+  /exchage-info:
+    get:
+      summary: d
+      description: d
+      tags:
+        - utilities
+      responses:
+        '200':
+          description: OK
+  /chargebacks:
     get:
       summary: d
       description: d
@@ -208,11 +268,15 @@ definitions:
     properties:
       metadata:
         type: array
-        description: This metadata will be added some custom fields from the client domain into the request item. It might be used to add some useful information. This metadata will not be available as field for research.
+        description: >-
+          This metadata will be added some custom fields from the client domain
+          into the request item. It might be used to add some useful
+          information. This metadata will not be available as field for
+          research.
         items:
           type: object
           maxItems: 5
-          properties: 
+          properties:
             key:
               type: string
               example: my_business_key
@@ -239,23 +303,32 @@ definitions:
             example: 150.17
           currency:
             type: string
-            description: The iso currency code according with ISO-4217 https://en.wikipedia.org/wiki/ISO_4217
+            description: >-
+              The iso currency code according with ISO-4217
+              https://en.wikipedia.org/wiki/ISO_4217
             example: BRL
           capture:
             type: boolean
-            description: Whether **false**, the transaction will not be confirmed automatically. The client do must so send a capture request to confirm the transaction
+            description: >-
+              Whether **false**, the transaction will not be confirmed
+              automatically. The client do must so send a capture request to
+              confirm the transaction
             default: true
             example: true
           soft_description:
             type: string
             maxLength: 22
-            description: This description will be displayed in the customer's card statement or slip
+            description: >-
+              This description will be displayed in the customer's card
+              statement or slip
             example: My Company Charge
           customer:
             type: object
-            description: Informations about to customer. This data will be keeped with the transaction data.
+            description: >-
+              Informations about to customer. This data will be keeped with the
+              transaction data.
             properties:
-              id: 
+              id:
                 type: string
                 description: The customer id on the client platform
                 example: MY_CUSTOMER7839
@@ -265,15 +338,23 @@ definitions:
                 example: Sherlock Holmes
               national_id:
                 type: string
-                description: The client national id. In Brazil it is used to be the CPF / CNPJ. It is used to guarantee that the customer will not overcome the legal limits for foreign transactions.
+                description: >-
+                  The client national id. In Brazil it is used to be the CPF /
+                  CNPJ. It is used to guarantee that the customer will not
+                  overcome the legal limits for foreign transactions.
                 example: 32423412323
               email:
                 type: string
-                description: The customer email address where receipts will be send. You can send only the email information whether the customer is already send in some previous transaction.
+                description: >-
+                  The customer email address where receipts will be send. You
+                  can send only the email information whether the customer is
+                  already send in some previous transaction.
                 example: customer@mycustomer.com
               address:
                 type: object
-                description: The current customer address, when needed. It's required in some sorts of transactions to reduce the possibility of fraud.
+                description: >-
+                  The current customer address, when needed. It's required in
+                  some sorts of transactions to reduce the possibility of fraud.
                 properties:
                   address:
                     type: string
@@ -289,11 +370,17 @@ definitions:
                   country:
                     type: string
                     maxLength: 2
-                    description: The country code represented by using the ISO 3166-1 alpha-2 https://en.wikipedia.org/wiki/ISO_3166-1
+                    description: >-
+                      The country code represented by using the ISO 3166-1
+                      alpha-2 https://en.wikipedia.org/wiki/ISO_3166-1
                     example: GB
           card_info:
             type: object
-            description: The customer's card info. Whether this node is not available, and the **type** attribute is setted to CREDIT_CARD or DEBIT_CARD, a whitelabel page address will be returned to enable the card data typing. You must redirect your addres to this returned address.
+            description: >-
+              The customer's card info. Whether this node is not available, and
+              the **type** attribute is setted to CREDIT_CARD or DEBIT_CARD, a
+              whitelabel page address will be returned to enable the card data
+              typing. You must redirect your addres to this returned address.
             properties:
               number:
                 type: string
@@ -314,10 +401,6 @@ definitions:
     allOf:
       - type: object
         properties:
-          kind:
-            type: string
-            enum: [charge]
-            description: the kind of the returned entity
           id:
             type: string
             example: SDS3200ks346xx2103sr
@@ -327,18 +410,22 @@ definitions:
             $ref: '#/definitions/types'
           currency:
             type: string
-            description: The iso currency code according with ISO-4217 https://en.wikipedia.org/wiki/ISO_4217
+            description: >-
+              The iso currency code according with ISO-4217
+              https://en.wikipedia.org/wiki/ISO_4217
             example: BRL
           redirect_url_type:
             type: string
-            description: Indicates the type of redirect url to the next step of the customer's payment
+            description: >-
+              Indicates the type of redirect url to the next step of the
+              customer's payment
             enum:
               - SLIP
               - CHECKOUT
           redirect_url:
             type: string
             description: URL to redirect the customer browser.
-            example: https://checkout.bexs.com/checkout/SDS3200ks346xx2103sr
+            example: 'https://checkout.bexs.com/checkout/SDS3200ks346xx2103sr'
           amount-info:
             type: object
             properties:
@@ -369,11 +456,15 @@ definitions:
                 example: 3.1
               exchange_currency:
                 type: string
-                description: The destination currency code in ISO-4217 https://en.wikipedia.org/wiki/ISO_4217
+                description: >-
+                  The destination currency code in ISO-4217
+                  https://en.wikipedia.org/wiki/ISO_4217
                 example: USD
           event_date:
             type: object
-            description: This node has date/time for all the important events occurred on this transaction
+            description: >-
+              This node has date/time for all the important events occurred on
+              this transaction
             properties:
               created_at:
                 type: string
@@ -393,11 +484,16 @@ definitions:
                 format: date-time
               cleared_at:
                 type: string
-                description: The date that the acquirer paid the transaction value into Bexs account. The amount money of this transaction is available for transference.
+                description: >-
+                  The date that the acquirer paid the transaction value into
+                  Bexs account. The amount money of this transaction is
+                  available for transference.
                 format: date-time
               transfered_at:
                 type: string
-                description: This is the date when transaction amount was transferred to the client account.
+                description: >-
+                  This is the date when transaction amount was transferred to
+                  the client account.
                 format: date-time
           status:
             $ref: '#/definitions/status'
@@ -416,7 +512,7 @@ definitions:
       - TRANSFERRED
   types:
     type: string
-    description:  the charge type
+    description: the charge type
     enum:
       - CREDIT_CARD
       - DEBIT_CARD
@@ -429,15 +525,22 @@ definitions:
       bank:
         type: number
         description: the bank number
+        example: "237"
       agency:
         type: string
         description: the agency number
+        example: "2516"
       account:
         type: string
+        enum:
+          - SAVE_ACCOUNT
+          - CHECK_ACCOUNT
+          - CREDIT_CARD
         description: the account number
       digit:
         type: string
         description: the account digit
+        example: "8"
 externalDocs:
   description: Find out more about Swagger
   url: 'http://swagger.io'
