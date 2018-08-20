@@ -13,8 +13,6 @@ basePath: /v1
 tags:
   - name: charge
     description: Everything about your Pets
-  - name: management
-    description: Access to Petstore orders
 schemes:
   - https
 paths:
@@ -42,6 +40,7 @@ paths:
       description: adsfasdf
       tags:
         - charge
+        - wip
       responses:
         '200':
           description: OK
@@ -111,41 +110,55 @@ paths:
   /transfers:
     post:
       summary: Request a transfer of available money to a overseas account
-      description: sd
+      description: This endpoint enables the transference of available balance to the pre-configured client account
       tags:
-        - transfer
+        - backoffice
+      parameters:
+        - in: body
+          name: transfer
+          schema:
+            $ref: '#/definitions/transfer'
       responses:
         '200':
           description: OK
+          schema:
+            $ref: '#/definitions/transfer_response'
     get:
       summary: Allows you to query transferences using any combination of filters
-      description: asdf
+      description: filter are pending to be defined
       tags:
-        - transfer
+        - backoffice
+        - wip
       responses:
         '200':
           description: OK
   '/transfers/{id}':
     patch:
-      summary: Update transference information when needed
+      summary: Update transference information when needed.
       description: >-
-        You are able to fix some invalid parameter or adjust amounts or even the
-        transactions to be transfered by this request.
+        You are able to fix some invalid parameter or adjust amounts or even the transactions to be transfered by this request.
+        After updating a transference request the transference process restarts from beginning
       tags:
-        - transfer
+        - backoffice
       parameters:
         - name: id
           type: string
           in: path
           required: true
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/transfer'
       responses:
         '200':
           description: OK
+          schema:
+            $ref: '#/definitions/transfer_response'
     get:
       summary: Retrieve a transference request info/status based on the transfer id
-      description: sdf
+      description: Retrieve a transference request info/status based on the transfer id
       tags:
-        - transfer
+        - backoffice
       parameters:
         - name: id
           type: string
@@ -154,12 +167,14 @@ paths:
       responses:
         '200':
           description: OK
+          schema:
+            $ref: '#/definitions/transfer_response'
   '/transfers/{id}/cancel':
     post:
       summary: Cancel a transference request.
-      description: sdf
+      description: To cancel a request it must not be committed before, once its committed the transference is already in course and cannot be reverted.
       tags:
-        - transfer
+        - backoffice
       parameters:
         - name: id
           type: string
@@ -168,6 +183,8 @@ paths:
       responses:
         '200':
           description: OK
+          schema:
+            $ref: '#/definitions/transfer_response'
   '/transfers/{id}/commit':
     post:
       summary: Confirm the exchange rate and term of calculated to the transfer.
@@ -176,7 +193,7 @@ paths:
         request is able to be committed. It means that, the client has accepted
         the exchange rates as well as the term to overseas transferences.
       tags:
-        - transfer
+        - backoffice
       parameters:
         - name: id
           type: string
@@ -185,6 +202,8 @@ paths:
       responses:
         '200':
           description: OK
+          schema:
+            $ref: '#/definitions/transfer_response'
   /balance:
     get:
       summary: >-
@@ -202,6 +221,7 @@ paths:
       description: d
       tags:
         - backoffice
+        - wip
       responses:
         '200':
           description: OK
@@ -214,6 +234,7 @@ paths:
           description: OK
       tags:
         - customer
+        - wip
   /customers/{id}:
     get:
       summary: Recover a customer
@@ -228,6 +249,22 @@ paths:
           description: ok
       tags:
         - customer
+        - wip
+  /customers/{id}/wallet:
+    get:
+      summary: Recover a customer
+      description: x
+      parameters: 
+        - in: path
+          name: id
+          type: string
+          required: true
+      responses:
+        '200':
+          description: ok
+      tags:
+        - customer
+        - wip
   /tokens:
     post:
       summary: s
@@ -242,24 +279,42 @@ paths:
       description: d
       tags:
         - utilities
+        - wip
       responses:
         '200':
           description: OK
   /exchage-info:
     get:
-      summary: d
-      description: d
+      summary: Recover the current exchange rate
+      description: Using this function you can retrieve the exchange rate
+      parameters: 
+        - in: query
+          name: from
+          description: the origin currency code https://en.wikipedia.org/wiki/ISO_4217 
+          type: string
+        - in: query
+          name: to
+          description: the destination currency code https://en.wikipedia.org/wiki/ISO_4217 
+          type: string
       tags:
         - utilities
       responses:
         '200':
           description: OK
+          schema:
+            type: object
+            properties:
+              rate:
+                type: number
+                format: float
+                example: 3.52
   /chargebacks:
     get:
       summary: d
       description: d
       tags:
         - utilities
+        - wip
       responses:
         '200':
           description: OK
@@ -541,6 +596,86 @@ definitions:
         type: string
         description: the account digit
         example: "8"
+  transfer:
+    type: object
+    description: The transference request info
+    properties:
+      destination:
+        type: object
+        properties:
+          account:
+            type: string
+            description: The pre-cadastred destination account on the client interface
+            example: my-account-123
+          currency:
+            type: string
+            description: >-
+              The iso currency code according with ISO-4217
+              https://en.wikipedia.org/wiki/ISO_4217
+            example: EUR
+      transactions:
+        type: array
+        description: the id of the transactions that compose the amount to be transfered.
+        items:
+          type: string
+          example: 
+            - SDF234FDx673
+            - 234SSDF234523
+            - 2524xF234002
+      total_amount:
+        type: number
+        format: float
+        description: the total amount of transactions to be transfered in the original transaction currency
+        example: 250.85
+      callback:
+        description: the callback url to be invoked when the exchange rate ready to be confirmed/refused. This url will be invoked using post method with the same data you of the transfer query endpoint
+        type: string
+        example: https://webhook.mycompany.com/transferences/{my-internal-id}
+  transfer_response:
+    description: The transference response
+    allOf:
+      - type: object
+        properties:
+          id:
+            type: string
+            description: the transference request id
+            example: tr234seR3s
+          status:
+            type: string
+            description: the transfer request current status
+            enum:
+             - RECEIVED
+             - WAITING_QUOTATION
+             - WAITING_CONFIRMATION
+             - WAITING_TRANSFERENCE
+             - TRANSFERRED
+             - CANCELLED
+            example: WAITING_CONFIRMATION
+          exchange:
+            type: object
+            description: the quotation to the required transference
+            properties:
+              amount:
+                type: number
+                format: float
+                description: the total amount after exchange with no disconts
+                example: 56.08
+              rate:
+                type: number
+                format: float
+                description: the exchange rate at the moment of this request
+                example: 4.47
+              exchange-fee:
+                type: number
+                format: float
+                description: the exchange fee charged in this transference request
+                example: 0.24
+              exchange-tax:
+                type: number
+                example: 3.57
+                description: the exchange tax charged by the local government
+              
+      - $ref: '#/definitions/transfer'
 externalDocs:
   description: Find out more about Swagger
   url: 'http://swagger.io'
