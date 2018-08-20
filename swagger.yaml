@@ -209,12 +209,14 @@ paths:
       summary: >-
         This api is used to inform the client about the current financial
         positions in its bexs account.
-      description: s
+      description: recover the current balance of the client account
       tags:
         - backoffice
       responses:
         '200':
           description: OK
+          schema:
+            $ref: '#/definitions/balance'
   /analitycs:
     get:
       summary: d
@@ -676,6 +678,49 @@ definitions:
                 description: the exchange tax charged by the local government
               
       - $ref: '#/definitions/transfer'
+  balance:
+    type: object
+    description: the balance information
+    properties:
+      available:
+        type: array
+        items:
+          $ref: '#/definitions/balance_item'
+      waiting_clearing:
+        type: array
+        items:
+          $ref: '#/definitions/balance_item'
+      waiting_capture:
+        type: array
+        items:
+          $ref: '#/definitions/balance_item'
+  balance_item:
+    type: object
+    properties:
+      currency:
+        type: string
+        description: Indicates the currence of the specific amount https://en.wikipedia.org/wiki/ISO_4217
+        example: BRL
+      amount: 
+        type: number
+        format: float
+        example: 530.00
+      from:
+        type: object
+        properties:
+          transference:
+            type: number
+            format: float
+            example: 150.00
+          card:
+            type: number
+            format: float
+            example: 300.00
+          slip: 
+            type: number
+            format: float
+            example: 80.00
+  
 externalDocs:
   description: Find out more about Swagger
   url: 'http://swagger.io'
