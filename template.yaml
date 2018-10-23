@@ -21,7 +21,7 @@ variables:
    defaultValue: paymentstage
  - name: jenkins_test_job
    description: The Jenkins job path to the automated test
-   default: payment-test/job/stage
+   defaultValue: payments-tests/job/stage
 configuration:
  concurrentExecutions:
   limitConcurrent: true
@@ -98,6 +98,6 @@ stages:
    type: jenkins
    failPipeline: true
    config:
-     job: payments-tests/job/stage
+     job: "{{jenkins_test_job}}"
      master: jenkins
      name: Automated Tests
