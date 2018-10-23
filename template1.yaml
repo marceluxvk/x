@@ -23,17 +23,16 @@ configuration:
     propertyFile: "spinnaker.properties"
     type: jenkins
 stages:
- - refId: 1
+ - id: deployTest
+   type: deployManifest
    source: text
-   type: "deployManifest"
-   name: Deploy to Stage
    stageTimeoutMs: 60000
-   account: spinnaker-service-account
-   cloudProvider: kubernetes
-   manifestArtifactAccount: embedded-artifact
-   manifests:
-    - apiVersion: v1
-      kind: Service
-      metadata:
+   config:
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
+    manifests:
+     - apiVersion: v1
+       kind: Service
+       metadata:
         name: payment-service 
         namespace: payments-stage
