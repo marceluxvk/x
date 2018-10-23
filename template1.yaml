@@ -32,8 +32,48 @@ stages:
     cloudProvider: kubernetes
     manifestArtifactAccount: embedded-artifact
     manifests:
-     - apiVersion: v1
-       kind: Service
-       metadata:
+    - apiVersion: v1
+      kind: Service
+      metadata:
         name: payment-service 
         namespace: payments-stage
+      spec:
+            type: ClusterIP
+            selector:
+              app: payment
+            ports:
+              - name: http
+                port: 8080
+                targetPort: 8080
+    - apiVersion: extensions/v1beta1
+      kind: Deployment
+      metadata:
+        name: payment-deployment,
+        namespace: payments-stage
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: payment
+        strategy:
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+          type: RollingUpdate
+          template:
+          metadata:
+            labels:
+              app: payment
+          spec:
+            containers:
+              - image: "${ trigger[\"properties\"][\"ci.image\"] }"
+                imagePullPolicy: IfNotPresent
+                name: payment-service,
+                volumeMounts: 
+                  - mountPath: "/secret"
+                    name: "datastore"
+            restartPolicy: "Always"
+            volumes: 
+              - name: datastore
+                secret:
+                secretName": datastore-cert
