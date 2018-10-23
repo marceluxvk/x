@@ -15,10 +15,13 @@ variables:
    description: The service name
  - name: jenkinsjob
    description: The Jenkins job path
-   defaultValue: payment-service/job/boleto
+   defaultValue: payment-service/job/stage
  - name: application
    description: The application name
    defaultValue: paymentstage
+ - name: jenkins_test_job
+   description: The Jenkins job path to the automated test
+   default: payment-test/job/stage
 configuration:
  concurrentExecutions:
   limitConcurrent: true
