@@ -23,7 +23,8 @@ configuration:
     propertyFile: "spinnaker.properties"
     type: jenkins
 stages:
- - name: Deploy to Stage
+ - id: "1"
+   name: Deploy to Stage
    account: spinnaker-service-account
    cloudProvider: kubernetes
    manifestArtifactAccount: embedded-artifact
