@@ -1,124 +1,15 @@
 schema: "1"
-id: template-deploy
+id: services-template
 metadata:
-  description: Deploy to account template
-  name: deploy to account
-  owner: sample@sample.com
-  scopes: 
-    - global
-protect: false
-configuration:
-  concurrentExecutions:
-    limitConcurrent: true
-  triggers:
-  - account: dockerhub
-    enabled: true
-    name: dockertrigger
-    organization: spinnaker
-    registry: index.docker.io
-    repository: spinnaker/workshop-demo
-    type: docker
+ description: Service Template. Generates Deployment, Replicaset and POD
+ name: Service Deployment Template
+ owner: marcelo.lima@bexsbanco.com.br
+ scope: 
+  - global
+protected: false
 variables:
-- name: deployAccount
-  description: The account where the application will be deployed to
-  defaultValue: workshop
-- name: deployStack
-  description: The stack to deploy to
-  defaultValue: dev
-- name: deployTag
-  description: The tag of the docker image to deploy
-  example: Pick from blue, orange, purple, red, or white
-  defaultValue: purple
-stages:
-- config:
-    disabled: false
-    expectedArtifacts: []
-    keepWaitingPipelines: false
-    lastModifiedBy: anonymous
-    limitConcurrent: true
-    parameterConfig: []
-    stages:
-    - account: spinnaker-service-account
-      cloudProvider: kubernetes
-      manifestArtifactAccount: embedded-artifact
-      manifests:
-      - apiVersion: v1
-        kind: Service
-        metadata:
-          name: payment-service
-          namespace: payments-stage
-        spec:
-          ports:
-          - name: http
-            port: 8080
-            targetPort: 8080
-          selector:
-            app: payment
-          type: ClusterIP
-      - apiVersion: extensions/v1beta1
-        kind: Deployment
-        metadata:
-          name: payment-deployment
-          namespace: payments-stage
-        spec:
-          replicas: 1
-          selector:
-            matchLabels:
-              app: payment
-          strategy:
-            rollingUpdate:
-              maxSurge: 1
-              maxUnavailable: 1
-            type: RollingUpdate
-          template:
-            metadata:
-              labels:
-                app: payment
-            spec:
-              containers:
-              - image: ${ trigger["properties"]["ci.image"] }
-                imagePullPolicy: IfNotPresent
-                name: payment-service
-                volumeMounts:
-                - mountPath: "/secret"
-                  name: datastore
-              restartPolicy: Always
-              volumes:
-              - name: datastore
-                secret:
-                  secretName: datastore-cert
-      moniker:
-        app: paymentstage
-      name: Deploy on stage
-      overrideTimeout: true
-      refId: '1'
-      relationships:
-        loadBalancers: []
-        securityGroups: []
-      requisiteStageRefIds: []
-      source: text
-      stageTimeoutMs: 120000
-      type: deployManifest
-    - continuePipeline: false
-      failPipeline: true
-      job: payments-tests/job/stage
-      master: jenkins
-      name: Automated Tests
-      parameters: {}
-      propertyFile: ''
-      refId: '2'
-      requisiteStageRefIds:
-      - '1'
-      type: jenkins
-    triggers:
-    - enabled: true
-      job: payment-service/job/boleto
-      master: jenkins
-      propertyFile: spinnaker.properties
-      type: jenkins
-    updateTs: '1540296452702'
-  id: deploy1
-  inheritanceControl: {}
-  inject: {}
-  name: Deploy
-  type: deploy
+ - name: namespace
+   description: The target namespace where the service will be deployed
+configuration:
+ limitConcurrent: true
+
