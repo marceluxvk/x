@@ -24,7 +24,7 @@ configuration:
   limitConcurrent: true
  triggers: 
   - enabled: true
-    job: {{jenkinsjob}}
+    job: "{{jenkinsjob}}"
     master: jenkins
     propertyFile: "spinnaker.properties"
     type: jenkins
@@ -38,7 +38,7 @@ stages:
     account: spinnaker-service-account
     cloudProvider: kubernetes
     moniker:
-      app: {{application}}
+      app: "{{application}}"
     manifests:
     - apiVersion: v1
       kind: Service
@@ -48,7 +48,7 @@ stages:
       spec:
         type: ClusterIP
         selector:
-          app: {{service_name}}
+          app: "{{service_name}}"
         ports:
           - name: http
             port: 8080
