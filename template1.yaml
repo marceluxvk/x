@@ -72,10 +72,10 @@ stages:
                 imagePullPolicy: IfNotPresent
                 name: payment-service,
                 volumeMounts: 
-                  - mountPath: "/secret"
-                    name: "datastore"
+                  - mountPath: /secret
+                    name: datastore
             restartPolicy: "Always"
-            volumes: 
+            volumes:
               - name: datastore
                 secret:
                   secretName: datastore-cert
