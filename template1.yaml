@@ -43,7 +43,7 @@ stages:
     - apiVersion: v1
       kind: Service
       metadata:
-        name: "service_name-service"
+        name: "{{service_name}}-service"
         namespace: "namespace"
       spec:
         type: ClusterIP
