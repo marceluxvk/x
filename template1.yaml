@@ -31,6 +31,8 @@ stages:
     manifestSource: text
     account: spinnaker-service-account
     cloudProvider: kubernetes
+    moniker:
+      app: paymentstage
     manifests:
     - apiVersion: v1
       kind: Service
