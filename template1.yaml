@@ -78,4 +78,4 @@ stages:
             volumes: 
               - name: datastore
                 secret:
-                secretName: datastore-cert
+                  secretName: datastore-cert
