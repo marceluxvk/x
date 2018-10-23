@@ -10,9 +10,15 @@ protected: false
 variables:
  - name: namespace
    description: The target namespace where the service will be deployed
+   defaultValue: payments-stage
+ - name: service_name
+   description: The service name
  - name: jenkinsjob
    description: The Jenkins job path
    defaultValue: payment-service/job/boleto
+ - name: application
+   description: The application name
+   defaultValue: paymentstage
 configuration:
  concurrentExecutions:
   limitConcurrent: true
@@ -70,7 +76,7 @@ stages:
             containers:
               - image: "${ trigger[\"properties\"][\"ci.image\"] }"
                 imagePullPolicy: IfNotPresent
-                name: payment-service,
+                name: payment-service
                 volumeMounts: 
                   - mountPath: /secret
                     name: datastore
