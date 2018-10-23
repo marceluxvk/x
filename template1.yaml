@@ -27,9 +27,10 @@ stages:
    type: deployManifest
    stageTimeoutMs: 60000
    config:
-    source: text
+    manifestSource: text
     account: spinnaker-service-account
     cloudProvider: kubernetes
+    manifestArtifactAccount: embedded-artifact
     manifests:
      - apiVersion: v1
        kind: Service
