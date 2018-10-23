@@ -25,9 +25,9 @@ configuration:
 stages:
  - id: deployTest
    type: deployManifest
-   source: text
    stageTimeoutMs: 60000
    config:
+    source: text
     account: spinnaker-service-account
     cloudProvider: kubernetes
     manifests:
