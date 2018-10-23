@@ -22,3 +22,14 @@ configuration:
     master: jenkins
     propertyFile: "spinnaker.properties"
     type: jenkins
+stages:
+ - name: Deploy to Stage
+   account: spinnaker-service-account
+   cloudProvider: kubernetes
+   manifestArtifactAccount: embedded-artifact
+   manifests:
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: payment-service 
+        namespace: payments-stage
