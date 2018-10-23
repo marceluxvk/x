@@ -23,8 +23,11 @@ configuration:
     propertyFile: "spinnaker.properties"
     type: jenkins
 stages:
- - id: "1"
+ - refId: 1
+   source: text
+   type: "deployManifest"
    name: Deploy to Stage
+   stageTimeoutMs: 60000
    account: spinnaker-service-account
    cloudProvider: kubernetes
    manifestArtifactAccount: embedded-artifact
