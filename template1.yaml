@@ -44,7 +44,7 @@ stages:
       kind: Service
       metadata:
         name: "{{service_name}}-service"
-        namespace: "namespace"
+        namespace: "{{namespace}}"
       spec:
         type: ClusterIP
         selector:
