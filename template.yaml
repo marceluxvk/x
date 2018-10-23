@@ -29,7 +29,8 @@ configuration:
     propertyFile: "spinnaker.properties"
     type: jenkins
 stages:
- - id: Detploy to Stage
+ - id: Deploy to Stage
+   refId: 1
    type: deployManifest
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
@@ -85,3 +86,5 @@ stages:
               - name: datastore
                 secret:
                   secretName: datastore-cert
+
+
