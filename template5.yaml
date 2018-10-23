@@ -88,6 +88,8 @@ stages:
                   secretName: datastore-cert
  - id: Automated Tests
    refId: 2
+   dependsOn:
+    - Deploy to Stage
    continuePipeline: false
    stageTimeoutMs: 60000
    type: jenkins
@@ -96,6 +98,3 @@ stages:
      job: payments-tests/job/stage
      master: jenkins
      name: Automated Tests
-   requisiteStageRefIds:
-    - 1
-   
