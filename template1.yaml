@@ -24,7 +24,7 @@ configuration:
   limitConcurrent: true
  triggers: 
   - enabled: true
-    job: {{jenkinsjob}}
+    job: jenkinsjob
     master: jenkins
     propertyFile: "spinnaker.properties"
     type: jenkins
@@ -38,17 +38,17 @@ stages:
     account: spinnaker-service-account
     cloudProvider: kubernetes
     moniker:
-      app: {{application}}
+      app: application
     manifests:
     - apiVersion: v1
       kind: Service
       metadata:
-        name: "{{service_name}}-service"
-        namespace: "{{namespace}}"
+        name: "service_name-service"
+        namespace: "namespace"
       spec:
         type: ClusterIP
         selector:
-          app: {{service_name}}
+          app: service_name
         ports:
           - name: http
             port: 8080
@@ -56,13 +56,13 @@ stages:
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
-        name: "{{service_name}}-deployment"
-        namespace: "{{namespace}}"
+        name: "service_name-deployment"
+        namespace: "namespace"
       spec:
         replicas: 1
         selector:
           matchLabels:
-            app: "{{service_name}}"
+            app: "service_name"
         strategy:
           rollingUpdate:
             maxSurge: 1
@@ -71,12 +71,12 @@ stages:
         template:
           metadata:
             labels:
-              app: "{{service_name}}"
+              app: "service_name"
           spec:
             containers:
               - image: "${ trigger[\"properties\"][\"ci.image\"] }"
                 imagePullPolicy: IfNotPresent
-                name: "{{service_name}}"
+                name: "service_name"
                 volumeMounts: 
                   - mountPath: /secret
                     name: datastore
