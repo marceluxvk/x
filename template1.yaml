@@ -10,9 +10,15 @@ protected: false
 variables:
  - name: namespace
    description: The target namespace where the service will be deployed
+   defaultValue: payments-stage
+ - name: service_name
+   description: The service name
  - name: jenkinsjob
    description: The Jenkins job path
    defaultValue: payment-service/job/boleto
+ - name: application
+   description: The application name
+   defaultValue: paymentstage
 configuration:
  concurrentExecutions:
   limitConcurrent: true
@@ -37,8 +43,8 @@ stages:
     - apiVersion: v1
       kind: Service
       metadata:
-        name: payment-service 
-        namespace: payments-stage
+        name: {{service_name}}-service 
+        namespace: {{namespace}}
       spec:
         type: ClusterIP
         selector:
@@ -50,13 +56,13 @@ stages:
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
-        name: payment-deployment
-        namespace: payments-stage
+        name: {{service_name}}-deployment
+        namespace: {{namespace}}
       spec:
         replicas: 1
         selector:
           matchLabels:
-            app: payment
+            app: {{service_name}}
         strategy:
           rollingUpdate:
             maxSurge: 1
@@ -65,12 +71,12 @@ stages:
         template:
           metadata:
             labels:
-              app: payment
+              app: {{service_name}}
           spec:
             containers:
               - image: "${ trigger[\"properties\"][\"ci.image\"] }"
                 imagePullPolicy: IfNotPresent
-                name: payment-service,
+                name: {{service_name}}
                 volumeMounts: 
                   - mountPath: /secret
                     name: datastore
