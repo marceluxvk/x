@@ -40,13 +40,13 @@ stages:
         name: payment-service 
         namespace: payments-stage
       spec:
-            type: ClusterIP
-            selector:
-              app: payment
-            ports:
-              - name: http
-                port: 8080
-                targetPort: 8080
+        type: ClusterIP
+        selector:
+          app: payment
+        ports:
+          - name: http
+            port: 8080
+            targetPort: 8080
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
@@ -78,4 +78,4 @@ stages:
             volumes: 
               - name: datastore
                 secret:
-                secretName": datastore-cert
+                secretName: datastore-cert
