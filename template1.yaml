@@ -48,7 +48,7 @@ stages:
       spec:
         type: ClusterIP
         selector:
-          app: "{{service_name}}"
+          app:  "{{service_name}}"
         ports:
           - name: http
             port: 8080
