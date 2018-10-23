@@ -87,12 +87,15 @@ stages:
                 secret:
                   secretName: datastore-cert
  - id: Automated Tests
-   continuePipeline: false
-   failPipeline": true
-   job: payments-tests/job/stage
-   master: jenkins
-   name: Automated Tests
    refId: 2
+   continuePipeline: false
+   stageTimeoutMs: 60000
+   type: jenkins
+   failPipeline: true
+   config:
+     job: payments-tests/job/stage
+     master: jenkins
+     name: Automated Tests
    requisiteStageRefIds:
     - 1
-   type: jenkins
+   
