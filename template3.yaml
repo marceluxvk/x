@@ -92,7 +92,7 @@ stages:
    job: payments-tests/job/stage
    master: jenkins
    name: Automated Tests
-   refId: 2,
+   refId: 2
    requisiteStageRefIds:
     - 1
    type: jenkins
