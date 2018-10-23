@@ -50,7 +50,7 @@ stages:
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
-        name: payment-deployment,
+        name: payment-deployment
         namespace: payments-stage
       spec:
         replicas: 1
@@ -62,7 +62,7 @@ stages:
             maxSurge: 1
             maxUnavailable: 1
           type: RollingUpdate
-          template:
+        template:
           metadata:
             labels:
               app: payment
