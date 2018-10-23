@@ -24,7 +24,7 @@ configuration:
   limitConcurrent: true
  triggers: 
   - enabled: true
-    job: jenkinsjob
+    job: {{jenkinsjob}}
     master: jenkins
     propertyFile: "spinnaker.properties"
     type: jenkins
