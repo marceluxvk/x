@@ -16,9 +16,6 @@ variables:
  - name: jenkinsjob
    description: The Jenkins job path
    defaultValue: payment-service/job/boleto
- - name: application
-   description: The application name
-   defaultValue: paymentstage
 configuration:
  concurrentExecutions:
   limitConcurrent: true
@@ -38,7 +35,7 @@ stages:
     account: spinnaker-service-account
     cloudProvider: kubernetes
     moniker:
-      app: "{{application}}"
+      app: paymentstage
     manifests:
     - apiVersion: v1
       kind: Service
