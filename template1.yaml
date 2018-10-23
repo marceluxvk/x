@@ -24,7 +24,7 @@ configuration:
   limitConcurrent: true
  triggers: 
   - enabled: true
-    job: "{{jenkinsjob}}"
+    job: payment-service/job/boleto
     master: jenkins
     propertyFile: "spinnaker.properties"
     type: jenkins
