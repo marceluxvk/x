@@ -29,7 +29,7 @@ configuration:
     propertyFile: "spinnaker.properties"
     type: jenkins
 stages:
- - id: deployTest
+ - id: deployApp
    type: deployManifest
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
