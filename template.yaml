@@ -15,22 +15,39 @@ variables:
    description: The service name
  - name: jenkinsjob
    description: The Jenkins job path
-   defaultValue: payment-service/job/stage
+   defaultValue: payment-service/job/develop
  - name: application
    description: The application name
    defaultValue: paymentstage
  - name: jenkins_test_job
    description: The Jenkins job path to the automated test
-   defaultValue: payments-tests/job/stage
+   defaultValue: payments-tests/job/develop
+ - name: service_port_name
+   description: The name of the service port
+   defaultValue: http
+ - name: service_port
+   description: the external service port
+   defaultValue: 8080
+ - name: balancer
+   description: The type of the loadbalancer
+   defaultValue: ClusterIP
 configuration:
  concurrentExecutions:
   limitConcurrent: true
  triggers: 
   - enabled: true
-    job: payment-service/job/boleto
+    job: "{{jenkinsjob}}"
     master: jenkins
     propertyFile: "spinnaker.properties"
     type: jenkins
+ notifications:
+  - address: "bexspay-team"
+    level: "stage"
+    type: "slack"
+    when: 
+     - "stage.complete"
+     - "stage.failed"
+ sendNotifications: true
 stages:
  - id: Deploy to Stage
    refId: 1
@@ -50,13 +67,13 @@ stages:
         name: "{{service_name}}-service"
         namespace: "{{namespace}}"
       spec:
-        type: ClusterIP
+        type: "{{balancer}}"
         selector:
           app:  "{{service_name}}"
         ports:
-          - name: http
-            port: 8080
-            targetPort: 8080
+          - name: "{{service_port_name}}"
+            port: "{{service_port}}"
+            targetPort: "{{service_port}}"
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
