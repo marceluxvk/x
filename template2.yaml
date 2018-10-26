@@ -40,14 +40,7 @@ configuration:
     master: jenkins
     propertyFile: "spinnaker.properties"
     type: jenkins
- notifications:
-  - address: "bexspay-team"
-    level: "stage"
-    type: "slack"
-    when: 
-     - "stage.complete"
-     - "stage.failed"
- sendNotifications: true
+ 
 stages:
  - id: Deploy to Stage
    refId: 1
@@ -58,6 +51,14 @@ stages:
     manifestSource: text
     account: spinnaker-service-account
     cloudProvider: kubernetes
+    notifications:
+    - address: "bexspay-team"
+      level: "stage"
+      type: "slack"
+      when: 
+      - "stage.complete"
+      - "stage.failed"
+    sendNotifications: true
     moniker:
       app: "{{application}}"
     manifests:
