@@ -13,6 +13,8 @@ variables:
    defaultValue: payments-stage
  - name: service_name
    description: The service name
+ - name: configurationVersion
+   description: The environment configmap version
  - name: jenkinsjob
    description: The Jenkins job path
    defaultValue: payment-service/job/develop
@@ -40,7 +42,6 @@ configuration:
     master: jenkins
     propertyFile: "spinnaker.properties"
     type: jenkins
- 
 stages:
  - id: Deploy to Stage
    refId: 1
@@ -102,6 +103,9 @@ stages:
                 volumeMounts: 
                   - mountPath: /secret
                     name: datastore
+                envFrom:
+                  - configMapRef:
+                      name: "env-config-{{configurationVersion}}"
             restartPolicy: "Always"
             volumes:
               - name: datastore
