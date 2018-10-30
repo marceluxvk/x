@@ -66,7 +66,7 @@ stages:
     - apiVersion: v1
       kind: Service
       metadata:
-        name: name: "{{service_name}}-service"
+        name: "{{service_name}}-service"
         namespace: "{{namespace}}"
       spec:
         type: "{{balancer}}"
