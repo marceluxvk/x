@@ -79,7 +79,7 @@ stages:
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
-        name: "{{service_name}}-deployment-${ trigger[\"buildNumber\"] }"
+        name: "{{service_name}}-deployment"
         namespace: "{{namespace}}"
       spec:
         replicas: 1
