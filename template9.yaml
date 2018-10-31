@@ -81,7 +81,7 @@ stages:
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
-        name: "{{service_name}}-deployment-${ trigger[\"buildNumber\"] }"
+        name: "{{service_name}}-deployment"
         namespace: "{{namespace}}-stage"
       spec:
         replicas: 1
@@ -163,7 +163,7 @@ stages:
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
-        name: "{{service_name}}-deployment-${ trigger[\"buildNumber\"] }"
+        name: "{{service_name}}-deployment"
         namespace: "{{namespace}}-sandbox"
       spec:
         replicas: 1
