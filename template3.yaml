@@ -13,7 +13,9 @@ variables:
    defaultValue: payments
  - name: service_name
    description: The service name
- - name: configurationVersion
+ - name: stageConfigVersion
+   description: The environment configmap version
+ - name: sandboxConfigVersion
    description: The environment configmap version
  - name: jenkinsjob
    description: The Jenkins job path
@@ -105,7 +107,7 @@ stages:
                     name: datastore
                 envFrom:
                   - configMapRef:
-                      name: "env-config-{{configurationVersion}}"
+                      name: "env-config-{{stageConfigVersion}}"
             restartPolicy: "Always"
             volumes:
               - name: datastore
@@ -185,7 +187,7 @@ stages:
                     name: datastore
                 envFrom:
                   - configMapRef:
-                      name: "env-config-{{configurationVersion}}"
+                      name: "env-config-{{sandboxConfigVersion}}"
             restartPolicy: "Always"
             volumes:
               - name: datastore
