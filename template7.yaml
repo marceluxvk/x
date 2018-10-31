@@ -127,6 +127,8 @@ stages:
      name: Automated Tests
  - id: Update Sandbox
    refId: 3
+   dependsOn:
+    - Automated Tests
    type: deployManifest
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
