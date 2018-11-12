@@ -17,6 +17,8 @@ variables:
    description: The environment configmap version
  - name: sandboxConfigVersion
    description: The environment configmap version
+ - name: productionConfigVersion
+   description: The production configmap version
  - name: jenkinsjob
    description: The Jenkins job path
    defaultValue: payment-service/job/develop
@@ -125,6 +127,14 @@ stages:
      job: "{{jenkins_test_job}}"
      master: jenkins
      name: Automated Tests
+   notifications:
+    - address: "bexspay-team"
+      level: "stage"
+      type: "slack"
+      when: 
+      - "stage.complete"
+      - "stage.failed"
+   sendNotifications: true
  - id: Update Sandbox
    refId: 3
    dependsOn:
@@ -190,6 +200,76 @@ stages:
                 envFrom:
                   - configMapRef:
                       name: "env-config-{{sandboxConfigVersion}}"
+            restartPolicy: "Always"
+            volumes:
+              - name: datastore
+                secret:
+                  secretName: datastore-cert
+ - id: Update Production
+   refId: 4
+   dependsOn:
+    - Update Sandbox
+   type: deployManifest
+   stageTimeoutMs: 60000
+   manifestArtifactAccount: embedded-artifact
+   config:
+    manifestSource: text
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
+    notifications:
+    - address: "bexspay-team"
+      level: "stage"
+      type: "slack"
+      when: 
+      - "stage.complete"
+      - "stage.failed"
+    sendNotifications: true
+    moniker:
+      app: "{{application}}"
+    manifests:
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{service_name}}-service"
+        namespace: "{{namespace}}-sandbox"
+      spec:
+        type: "{{balancer}}"
+        selector:
+          app:  "{{service_name}}"
+        ports:
+          - name: "{{service_port_name}}"
+            port: "{{service_port}}"
+            targetPort: "{{service_port}}"
+    - apiVersion: extensions/v1beta1
+      kind: Deployment
+      metadata:
+        name: "{{service_name}}-deployment"
+        namespace: "{{namespace}}-sandbox"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{service_name}}"
+        strategy:
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+          type: RollingUpdate
+        template:
+          metadata:
+            labels:
+              app: "{{service_name}}"
+          spec:
+            containers:
+              - image: "${ trigger[\"properties\"][\"ci.image\"] }"
+                imagePullPolicy: IfNotPresent
+                name: "{{service_name}}"
+                volumeMounts: 
+                  - mountPath: /secret
+                    name: datastore
+                envFrom:
+                  - configMapRef:
+                      name: "env-config-{{productionConfigVersion}}"
             restartPolicy: "Always"
             volumes:
               - name: datastore
