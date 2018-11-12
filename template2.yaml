@@ -61,7 +61,6 @@ stages:
       level: "stage"
       type: "slack"
       when: 
-      - "stage.complete"
       - "stage.failed"
     sendNotifications: true
     moniker:
@@ -127,14 +126,14 @@ stages:
      job: "{{jenkins_test_job}}"
      master: jenkins
      name: Automated Tests
-   notifications:
-    - address: "bexspay-team"
-      level: "stage"
-      type: "slack"
-      when: 
-      - "stage.complete"
-      - "stage.failed"
-   sendNotifications: true
+     notifications:
+      - address: "bexspay-team"
+        level: "stage"
+        type: "slack"
+        when: 
+        - "stage.complete"
+        - "stage.failed"
+     sendNotifications: true
  - id: Update Sandbox
    refId: 3
    dependsOn:
@@ -151,7 +150,6 @@ stages:
       level: "stage"
       type: "slack"
       when: 
-      - "stage.complete"
       - "stage.failed"
     sendNotifications: true
     moniker:
