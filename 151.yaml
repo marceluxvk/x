@@ -86,8 +86,6 @@ modules:
         selector:
           app:  "app"
         ports:
-          {% for port in ports %}
           - name: "http"
             port: "8080"
             targetPort: "8080"
-          {% endfor %}
