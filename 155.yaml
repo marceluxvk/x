@@ -62,7 +62,7 @@ modules:
    - name: target
    - name: ns
    - name: ports
-     type: list
+     type: object
   definition:
     manifestSource: text
     account: spinnaker-service-account
