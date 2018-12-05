@@ -282,6 +282,6 @@ modules:
     - name: port
    definition: 
     name: "{{ name }}"
-    port: "{ port }}"
+    port: "{{ port }}"
     targetPort: "{{ port }}"
       
