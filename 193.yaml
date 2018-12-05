@@ -89,5 +89,5 @@ modules:
     {% for p in svcport %}
       - name: "svc-{{p}}"
         port: "{{p}}"
-        port: "{{target}}"
+        port: "{{p}}"
     {% endfor %}
