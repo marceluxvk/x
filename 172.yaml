@@ -1,4 +1,10 @@
-id: Template2
+{
+ "ports": 
+  [
+    {"name": "http", "port": 8080, "targetPort": 8080},
+    {"name": "grpc",  "port": 6565, "targetPort": 6565}
+  ]
+}id: Template2
 schema: "1"
 metadata:
   name: Template2
@@ -89,5 +95,14 @@ modules:
           app:  "app"
         ports: |
          {% for port in ports.ports %}
-           - name: {{port.name}}
+           - name: "{{port.name}}"
          {% endfor %}
+- id: port
+  usage: configure service port
+  variables:
+   - name: name
+   - port: port
+   - target: target
+  definition:
+   - name: "{{name}}"
+  
