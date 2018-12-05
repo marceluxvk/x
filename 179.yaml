@@ -12,13 +12,13 @@ variables:
 - name: service
   description: the service name without sufix
   type: string
-- name: ports
-  description: description of the service port
-  type: list
-  defaltVale: ["8080", "6565"]
 - name: namespace
   description: the prefix of the namespaces
   type: string
+- name: ports
+  description: description of the service port
+  type: list
+  defaultValue: ["8080", "6565"]
 - name: stage
   description: deploy on stage
   type: boolean
