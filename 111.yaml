@@ -16,7 +16,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config:
-     {% module kubemanifest %}
+     {% module teste ops=application %}
 #     manifestSource: text
 #     account: spinnaker-service-account
 #     cloudProvider: kubernetes
@@ -25,8 +25,8 @@ stages:
 #       level: "stage"
 #       type: "slack"
 #       when: 
-#       - "stage.failed"
-#     sendNotifications: true
+#       - "stage.failed"kubemanifest
+#     sendNotifications:kubemanifesttrue
 #     moniker:
 #       app: "teste"
 #     manifests:
