@@ -26,7 +26,7 @@ stages:
 modules:
 - id: kubema- name: environments
   usage: Kub  description: the list of environments to the deployment
-  variables:  type: list
+  variables:
    - name: name
   definition:
     manifestSource: text
