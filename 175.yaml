@@ -81,8 +81,6 @@ modules:
           app:  "app"
         ports: |
          {% for port in ports %}
-           - name: "svc-{{port}}"
-             port: "{{port}}"
-             targetPort: "{{port}}"
+           - {{port}}
          {% endfor %}
   
