@@ -57,10 +57,10 @@ modules:
    - name: ports
      type: list
   definition:
-    manifestSource.
-    account: spinn.
-    cloudProvider:.
-    notifications:.
+    manifestSource: text
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
+    notifications:
     - address: "bexspay-team"
       level: "stage"
       type: "slack"
