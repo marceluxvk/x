@@ -53,6 +53,26 @@ stages:
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="stage" ns=namespace ports=ports %}
+ - id: Automated Tests
+   refId: 2
+   dependsOn:
+    - Deploy to Stage
+   continuePipeline: false
+   stageTimeoutMs: 60000
+   type: jenkins
+   failPipeline: true
+   config:
+     job: "{{service}}-tests/job/develop"
+     master: jenkins
+     name: Automated Tests
+     notifications:
+      - address: "bexspay-team"
+        level: "stage"
+        type: "slack"
+        when: 
+        - "stage.complete"
+        - "stage.failed"
+     sendNotifications: true
 modules:
 - id: kubemanifest
   usage: The k8s deployer
