@@ -82,7 +82,7 @@ modules:
           app:  "app"
         ports: |
          {% for port in ports %}
-           - {% portMapping name=port target=port %}
+           - {% module portMapping name=port target=port %}
          {% endfor %}
 - id: portMapping
   usage: The k8s deployer
