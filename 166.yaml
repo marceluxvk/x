@@ -16,13 +16,13 @@ variables:
   description: description of the service port
   type: object
   example: |
-    - items:
-       - name: grpc
-         port: 6565
-         targetPort: 6565
-       - name: http
-         port: 8080
-         targetPort: 8080
+    items:
+     - name: grpc
+       port: 6565
+       targetPort: 6565
+     - name: http
+       port: 8080
+       targetPort: 8080
 - name: namespace
   description: the prefix of the namespaces
   type: string
