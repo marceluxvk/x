@@ -12,11 +12,11 @@ variables:
 - name: service
   description: the service name without sufix
   type: string
-- name: ports
+- name: config
   description: description of the service port
   type: object
   defaultValue:
-    items:
+    ports:
      - port: 8080
        name: "http"
      - port: 6568
@@ -49,7 +49,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifactports
    config: |
-      {% module kubemanifest name=service target="stage" ns=application ports=ports %}
+      {% module kubemanifest name=service target="stage" ns=application config=config %}
  - id: Automated Tests
    refId: 2
    dependsOn:
@@ -78,7 +78,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="sandbox" ns=application ports=ports %}
+      {% module kubemanifest name=service target="sandbox" ns=application config=config %}
  - id: Deploy to Prod
    refId: 3
    type: deployManifest
@@ -87,7 +87,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="prod" ns=application ports=ports %}
+      {% module kubemanifest name=service target="prod" ns=application config=config %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
@@ -95,7 +95,7 @@ modules:
    - name: name
    - name: target
    - name: ns
-   - name: ports
+   - name: config
      type: object
   definition:
     manifestSource: text
@@ -121,7 +121,7 @@ modules:
         selector:
           app:  "{{name}}"
         ports: |
-          {% for port in ports.items %}
+          {% for port in config.ports %}
           - {% module portMapping svcname=port.name svcport=port.port %}
           {% endfor %}
     - apiVersion: extensions/v1beta1
