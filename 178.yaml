@@ -15,6 +15,7 @@ variables:
 - name: ports
   description: description of the service port
   type: list
+  defaltVale: ["8080", "6565"]
 - name: namespace
   description: the prefix of the namespaces
   type: string
