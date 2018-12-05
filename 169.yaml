@@ -89,5 +89,5 @@ modules:
           app:  "app"
         ports: |
          {% for port in ports.items %}
-          - name: {{port.name}}
+           - {{port.name}}
          {% endfor %}
