@@ -273,15 +273,3 @@ stages:
               - name: datastore
                 secret:
                   secretName: datastore-cert
-
-modules:
- - id: kubeservice
-   usage: apenas um teste
-   variables:
-    - name: name
-    - name: port
-   definition: 
-    name: "{{ name }}"
-    port: "{{ port }}"
-    targetPort: "{{ port }}"
-      
