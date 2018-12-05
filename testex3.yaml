@@ -14,13 +14,13 @@ stages:
   config:
     clusters: |
       {% for region in regions %}
-      - {% module deployClusterAws region=region port=port %}
+      - {% module teste ops=region %}
       {% endfor %}
 
 modules:
-- id: deployClusterAws
+- id: teste
   usage: Defines a deploy stage cluster using the AWS cloud provider
   variables:
-  - name: region
+  - name: ops
   definition:
-    region: "{{ region }}"
+    region: "{{ ops }}"
