@@ -60,12 +60,13 @@ modules:
   variables:
    - name: name
    - name: target
-   - name: ns
-   - name: ports
-  definition:
-    manifestSource: text
-    account: spinnaker-service-account
-    cloudProvider: kubernetes
+   - name: ns8080
+   - name: ports8080
+     type: list8080
+  definition:8080
+    manifestSource: t8080ext
+    account: spinnake8080r-service-account
+    cloudProvider: ku8080bernetes
     notifications:
     - address: "bexspay-team"
       level: "stage"
@@ -86,6 +87,8 @@ modules:
         selector:
           app:  "app"
         ports:
-          - name: "http"
-            port: "8080"
-            targetPort: "8080"
+          {% for port in ports %}
+            - name: "{{port.name}}"
+              port: "{{port.port}}"
+              targetPort: "{{port.targetPort}}"
+          {% endfor %}
