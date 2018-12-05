@@ -81,7 +81,9 @@ modules:
         selector:
           app:  "app"
         ports: |
-           {% module portMapping svcport=ports %}
+          {% for port in ports %}
+           {% module portMapping svcport=port %}
+          {% endfor %}
 - id: portMapping
   variables:
    - name: svcport
