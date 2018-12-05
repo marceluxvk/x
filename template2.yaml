@@ -78,9 +78,9 @@ stages:
           app:  "{{service_name}}"
         ports:
           {% for port in ports %}
-          - name: "{{port.name}}"
-            port: "{{port.port}}"
-            targetPort: "{{port.target}}"
+          - name: http
+            port: 8080
+            targetPort: 8080
           {% endfor %}
     - apiVersion: extensions/v1beta1
       kind: Deployment
