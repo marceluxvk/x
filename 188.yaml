@@ -82,14 +82,5 @@ modules:
           app:  "app"
         ports: |
          {% for port in ports %}
-           - {% module portMapping name=port target=port %}
+           - name: "{{ port }}"
          {% endfor %}
-- id: portMapping
-  usage: The k8s deployer
-  variables:
-   - name: name
-   - name: target
-  definition:
-   name: "svc-{{target}}"
-   port: "{{target}}"
-   targetPort: "{{target}}"
