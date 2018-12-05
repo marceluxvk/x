@@ -25,7 +25,6 @@ modules:
   usage: The k8s deployer
   variables:
    - name: name
-   - name: ns
   definition:
     manifestSource: testage
     account: spinnakerstage
