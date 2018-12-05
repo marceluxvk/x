@@ -54,7 +54,7 @@ modules:
       kind: Service
       metadata:
         name: "{{name}}-service"
-        namespace: "{{ns}}-stage"
+        namespace: "{{ns}}-{{env}}"
       spec:
         type: "ClusterIP"
         selector:
