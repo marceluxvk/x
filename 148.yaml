@@ -5,6 +5,7 @@ metadata:
   description: Modules example template
   owner: marcelo.lima@bexsbanco.com.br
   scopes: [global]
+protected: false
 variables:
 - name: application
   type: string
