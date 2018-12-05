@@ -107,12 +107,12 @@ modules:
         template:
           metadata:
             labels:
-              app: "{{service}}"
+              app: "{{name}}"
           spec:
             containers:
               - image: "${ trigger[\"properties\"][\"ci.image\"] }"
                 imagePullPolicy: IfNotPresent
-                name: "{{service_name}}"
+                name: "{{name}}"
                 volumeMounts: 
                   - mountPath: /secret
                     name: datastore
