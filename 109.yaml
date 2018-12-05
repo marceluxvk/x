@@ -53,28 +53,28 @@ modules:
   usage: KubeManigest template
   definition:
     manifestSource: text
-     account: spinnaker-service-account
-     cloudProvider: kubernetes
-     notifications:
-     - address: "bexspay-team"
-       level: "stage"
-       type: "slack"
-       when: 
-       - "stage.failed"
-     sendNotifications: true
-     moniker:
-       app: "teste"
-     manifests:
-     - apiVersion: v1
-       kind: Service
-       metadata:
-         name: "teste-service"
-         namespace: "teste-stage"
-       spec:
-         type: "ClusterIP"
-         selector:
-           app:  "app"
-         ports:
-           - name: "http"
-             port: "8080"
-             targetPort: "8080"
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
+    notifications:
+    - address: "bexspay-team"
+      level: "stage"
+      type: "slack"
+      when: 
+      - "stage.failed"
+    sendNotifications: true
+    moniker:
+      app: "teste"
+    manifests:
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: "teste-service"
+        namespace: "teste-stage"
+      spec:
+        type: "ClusterIP"
+        selector:
+          app:  "app"
+        ports:
+          - name: "http"
+            port: "8080"
+            targetPort: "8080"
