@@ -60,13 +60,13 @@ modules:
   variables:
    - name: name
    - name: target
-   - name: ns8080
-   - name: ports8080
-     type: list8080
-  definition:8080
-    manifestSource: t8080ext
-    account: spinnake8080r-service-account
-    cloudProvider: ku8080bernetes
+   - name: ns
+   - name: ports
+     type: list
+  definition:
+    manifestSource: text
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
     notifications:
     - address: "bexspay-team"
       level: "stage"
