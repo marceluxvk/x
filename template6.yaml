@@ -185,8 +185,8 @@ stages:
         template:
           metadata:
             labels:
-              app: "{{service_name}}"      strategy: highlander
-
+              app: "{{service_name}}"      
+              strategy: highlander
           spec:
             containers:
               - image: "${ trigger[\"properties\"][\"ci.image\"] }"
