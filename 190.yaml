@@ -85,7 +85,7 @@ modules:
            {% module portMapping svcport=port %}
          {% endfor %}
 - id: portMapping
- variables:
+  variables:
    - name: svcport
- definition:
-   name: "{{svcport}}"
+  definition:
+    name: "{{svcport}}"
