@@ -6,21 +6,29 @@ metadata:
   owner: marcelo.lima@bexsbanco.com.br
   scopes: [global]
 variables:
-- name: regions
-  description: A list of AWS regions to deploy into
-  type: list
 - name: application
   type: string
+- name: service
+  type: string
+  description: the service name without sufix
+- name: namespace
+  description: the prefix of the namespaces
+- name: environments
+  description: the list of environments to the deployment. it will be used as namespace sufix
+  type: list
 stages:
  - id: Deploy to Stage
    type: deployManifest
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest %}
+      {% module kubemanifest name=service %}
 modules:
-- id: kubemanifest
-  usage: KubeManigest template
+- id: kubema- name: environments
+  usage: Kub  description: the list of environments to the deployment
+  variables:  type: list
+   - name: name
+   - name: namespace
   definition:
     manifestSource: text
     account: spinnaker-service-account
@@ -38,8 +46,8 @@ modules:
     - apiVersion: v1
       kind: Service
       metadata:
-        name: "teste-service"
-        namespace: "teste-stage"
+        name: "{{name}}-service"
+        namespace: "{{name}}-{{namespace}}"
       spec:
         type: "ClusterIP"
         selector:
