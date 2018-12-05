@@ -92,13 +92,13 @@ modules:
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
-        name: "{{service}}-deployment"
+        name: "{{name}}-deployment"
         namespace: "{{ns}}-{{target}}"
       spec:
         replicas: 1
         selector:
           matchLabels:
-            app: "{{service}}"
+            app: "{{name}}"
         strategy:
           rollingUpdate:
             maxSurge: 1
