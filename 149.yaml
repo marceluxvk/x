@@ -12,6 +12,16 @@ variables:
 - name: service
   description: the service name without sufix
   type: string
+- name: ports
+  description: description of the service port
+  type: object
+  example: |
+    - name: grpc
+      port: 6565
+      targetPort: 6565
+    - name: http
+      port: 8080
+      targetPort: 8080
 - name: namespace
   description: the prefix of the namespaces
   type: string
