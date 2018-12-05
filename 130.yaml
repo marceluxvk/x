@@ -11,24 +11,15 @@ variables:
 - name: service
   type: string
   description: the service name without sufix
-- name: namespace
+- name: ns
   description: the prefix of the namespaces
-- name: stage
-  type: boolean
-  description: deploy on stage
-- name: sandbox
-  type: boolean
-  description: deploy on sandbox
-- name: production
-  type: boolean
-  description: deploy on stage
 stages:
  - id: Deploy to Stage
    type: deployManifest
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service, ns=namespace %}
+      {% module kubemanifest name=service %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
