@@ -28,7 +28,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service ns=namespace %}
+      {% module kubemanifest name=service, ns=namespace %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
