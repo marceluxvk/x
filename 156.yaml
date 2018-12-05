@@ -86,7 +86,9 @@ modules:
         type: "ClusterIP"
         selector:
           app:  "app"
-        ports:
-          - name: "http"
-            port: "8080"
-            targetPort: "8080"
+        ports: |
+         {% for port in ports %}
+          - name: "{{port.name}}"
+            port: "{{port.port}}"
+            targetPort: "{{port.target}}"
+         {% endfor %}
