@@ -74,6 +74,7 @@ stages:
         - "stage.failed"
      sendNotifications: true
  - id: Deploy to Sandbox
+   refId: 3
    type: deployManifest
    dependsOn:
     - Automated Tests
@@ -82,6 +83,7 @@ stages:
    config: |
       {% module kubemanifest name=service target="sandbox" ns=namespace ports=ports %}
  - id: Deploy to Prod
+   refId: 3
    type: deployManifest
    dependsOn:
     - Automated Tests
