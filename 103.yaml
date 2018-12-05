@@ -22,4 +22,4 @@ modules:
   variables:
   - name: ops
   definition:
-    region: {{ ops }}
+    region: "{{ ops }}"
