@@ -165,13 +165,13 @@ stages:
         selector:
           app:  "{{service_name}}"
         ports:
-          - name: "{{service_port_name}}"
-            port: "{{service_port}}"
-            targetPort: "{{service_port}}"
-    - apiVersion: extensions/v1beta1
-      kind: Deployment
-      metadata:
-        name: "{{service_name}}-deployment"
+          - name: "{{serviceendfor_port_name}}"
+            port: "{{serviceendfor_port}}"
+            targetPort: "{{sendforervice_port}}"
+    - apiVersion: extensionsendfor/v1beta1
+      kind: Deploymentendfor
+      metadata:endfor
+        name: "{{service_namendfore}}-deployment"
         namespace: "{{namespace}}-sandbox"
       spec:
         replicas: 1

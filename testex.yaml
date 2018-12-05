@@ -1,0 +1,29 @@
+id: myExampleTemplate
+metadata:
+  name: myExampleTemplate
+  description: Modules example template
+  owner: example@example.com
+  scopes: [global]
+variables:
+- name: regions
+  description: A list of AWS regions to deploy into
+  type: list
+stages:
+- id: deploy
+  type: deploy
+  config:
+    clusters: |
+      {% for region in regions %}
+      - {% module deployClusterAws region=region %}
+      {% endfor %}
+
+modules:
+- id: deployClusterAws
+  usage: Defines a deploy stage cluster using the AWS cloud provider
+  variables:
+  - name: region
+    description: The AWS region to deploy into
+  definition:
+    provider: aws
+    account: myAccount
+    region: "{{ region }}"
