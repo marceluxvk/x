@@ -28,14 +28,13 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service ns=namespace env="stage" %}
+      {% module kubemanifest name=service ns=namespace %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
   variables:
    - name: name
    - name: ns
-   - name: env
   definition:
     manifestSource: testage
     account: spinnakerstage
@@ -54,7 +53,7 @@ modules:
       kind: Service
       metadata:
         name: "{{name}}-service"
-        namespace: "{{ns}}-{{env}}"
+        namespace: "{{ns}}-stage"
       spec:
         type: "ClusterIP"
         selector:
