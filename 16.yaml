@@ -165,13 +165,13 @@ stages:
         selector:
           app:  "{{service_name}}"
         ports:
-          - name: "{{serviceendfor_port_name}}"
-            port: "{{serviceendfor_port}}"
-            targetPort: "{{sendforervice_port}}"
-    - apiVersion: extensionsendfor/v1beta1
-      kind: Deploymentendfor
-      metadata:endfor
-        name: "{{service_namendfore}}-deployment"
+          - name: "{{service_port_name}}"
+            port: "{{service_port}}"
+            targetPort: "{{service_port}}"
+    - apiVersion: extensions/v1beta1
+      kind: Deployment
+      metadata:
+        name: "{{service_name}}-deployment"
         namespace: "{{namespace}}-sandbox"
       spec:
         replicas: 1
@@ -273,3 +273,14 @@ stages:
               - name: datastore
                 secret:
                   secretName: datastore-cert
+modules:
+ - id: kubeservice
+   usage: apenas um teste
+   variables:
+    - name: name
+    - name: port
+   definition: 
+    name: "{{ name }}"
+    port: "{{ port }}"
+    targetPort: "{{ port }}"
+      
