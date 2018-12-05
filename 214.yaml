@@ -47,9 +47,9 @@ stages:
  - id: Deploy to Stage
    type: deployManifest
    stageTimeoutMs: 60000
-   manifestArtifactAccount: embedded-artifact
+   manifestArtifactAccount: embedded-artifactports
    config: |
-      {% module kubemanifest name=service target="stage" ns=application ports=ports %}
+      {% module kubemanifest name=service target="stage" ns=application ports=ports.items %}
  - id: Automated Tests
    refId: 2
    dependsOn:
@@ -121,7 +121,7 @@ modules:
         selector:
           app:  "{{name}}"
         ports: |
-          {% for port in ports.items %}
+          {% for port in ports %}
           - {% module portMapping svcname=port.name svcport=port.port %}
           {% endfor %}
     - apiVersion: extensions/v1beta1
