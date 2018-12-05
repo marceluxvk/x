@@ -17,32 +17,7 @@ stages:
    manifestArtifactAccount: embedded-artifact
    config:
      {% module teste ops=application %}
-#     manifestSource: text
-#     account: spinnaker-service-account
-#     cloudProvider: kubernetes
-#     notifications:
-#     - address: "bexspay-team"
-#       level: "stage"
-#       type: "slack"
-#       when: 
-#       - "stage.failed"kubemanifest
-#     sendNotifications:kubemanifesttrue
-#     moniker:
-#       app: "teste"
-#     manifests:
-#     - apiVersion: v1 
-#       kind: Service 
-#       metadata: 
-#         name: "teste-s ervice"
-#         namespace: "teste-stage"
-#       spec:
-#         type: "ClusterIP"
-#         selector:
-#           app:  "app"
-#         ports:
-#           - name: "http"
-#             port: "8080"
-#             targetPort: "8080"
+
 modules:
 - id: teste
   usage: Defines a deploy stage cluster using the AWS cloud provider
