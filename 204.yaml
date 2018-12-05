@@ -22,7 +22,7 @@ variables:
     items:
      - port: 8080
        name: "http"
-     - port: 6565
+     - port: 6568
        name: "grpc"
 - name: stage
   description: deploy on stage
