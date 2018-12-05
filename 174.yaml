@@ -1,10 +1,4 @@
-{
- "ports": 
-  [
-    {"name": "http", "port": 8080, "targetPort": 8080},
-    {"name": "grpc",  "port": 6565, "targetPort": 6565}
-  ]
-}id: Template2
+id: Template2
 schema: "1"
 metadata:
   name: Template2
