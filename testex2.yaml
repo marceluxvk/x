@@ -8,7 +8,6 @@ variables:
 - name: regions
   description: A list of AWS regions to deploy into
   type: list
-- name: port
 stages:
 - id: deploy
   type: deploy
@@ -23,7 +22,5 @@ modules:
   usage: Defines a deploy stage cluster using the AWS cloud provider
   variables:
   - name: region
-  - name: port
   definition:
-    port: {{ port }}
     region: "{{ region }}"
