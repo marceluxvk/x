@@ -9,8 +9,8 @@ variables:
 - name: application
   type: string
 - name: service
-  type: string
   description: the service name without sufix
+  type: string
 - name: namespace
   description: the prefix of the namespaces
   type: string
@@ -27,6 +27,15 @@ variables:
   description: deploy to production
   type: boolean
   defaultValue: false
+configuration:
+ concurrentExecutions:
+  limitConcurrent: true
+ triggers: 
+  - enabled: true
+    job: "{{service}}-service/job/develop"
+    master: jenkins
+    propertyFile: "spinnaker.properties"
+    type: jenkins
 stages:
  - id: Deploy to Stage
    type: deployManifest
