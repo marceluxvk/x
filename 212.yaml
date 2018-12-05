@@ -12,9 +12,6 @@ variables:
 - name: service
   description: the service name without sufix
   type: string
-- name: namespace
-  description: the prefix of the namespaces
-  type: string
 - name: ports
   description: description of the service port
   type: object
@@ -52,7 +49,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="stage" ns=namespace ports=ports %}
+      {% module kubemanifest name=service target="stage" ns=application ports=ports %}
  - id: Automated Tests
    refId: 2
    dependsOn:
@@ -81,7 +78,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="sandbox" ns=namespace ports=ports %}
+      {% module kubemanifest name=service target="sandbox" ns=application ports=ports %}
  - id: Deploy to Prod
    refId: 3
    type: deployManifest
@@ -90,7 +87,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="prod" ns=namespace ports=ports %}
+      {% module kubemanifest name=service target="prod" ns=application ports=ports %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
