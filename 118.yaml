@@ -17,7 +17,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module teste ops=application %}
+      {% module kubemanifest %}
 modules:
 - id: teste
   usage: Defines a deploy stage cluster using the AWS cloud provider
