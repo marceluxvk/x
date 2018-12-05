@@ -16,7 +16,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config:
-     - {% module teste ops=application %}
+     {% module teste ops=application %}
 
 modules:
 - id: teste
