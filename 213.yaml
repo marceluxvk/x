@@ -83,7 +83,7 @@ stages:
    refId: 3
    type: deployManifest
    dependsOn:
-    - Automated Tests
+    - Deploy to Sandbox
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
