@@ -22,7 +22,9 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service namespace="stage" %}
+      {% for ns in namespace %}
+       {% module kubemanifest name=service namespace=ns %}
+      {% endfor %}
 modules:
 - id: kubema- name: environments
   usage: Kub  description: the list of environments to the deployment
