@@ -53,7 +53,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config:
-    - {% module kubeservice name=service_port_name port=service_port type=http %}
+    - {% module kubeservice name=service_port_name port=service_port type=http namespace=namespace application=application balancer=balancer %}
  - id: Automated Tests
    refId: 2
    dependsOn:
@@ -63,11 +63,11 @@ stages:
    type: jenkins
    failPipeline: true
    config:
-     job: "{{jenkins_test_job}}"
+     job: "{{jenkins_test_job}}balancer
      master: jenkins
      name: Automated Tests
      notifications:
-      - address: "bexspay-team"
+      - address: "bexspay-team"balancer
         level: "stage"
         type: "slack"
         when: 
@@ -220,6 +220,9 @@ modules:
     - name: name
     - name: type
     - name: port
+    - name: namespace
+    - name: application
+    - name: balancer
    definition: 
     manifestSource: text
     account: spinnaker-service-account
