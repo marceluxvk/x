@@ -89,6 +89,41 @@ modules:
           {% for port in ports.items %}
           - {% module portMapping svcname=port.name svcport=port.port %}
           {% endfor %}
+    - apiVersion: extensions/v1beta1
+      kind: Deployment
+      metadata:
+        name: "{{service}}-deployment"
+        namespace: "{{ns}}-{{target}}"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{service}}"
+        strategy:
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+          type: RollingUpdate
+        template:
+          metadata:
+            labels:
+              app: "{{service}}"
+          spec:
+            containers:
+              - image: "${ trigger[\"properties\"][\"ci.image\"] }"
+                imagePullPolicy: IfNotPresent
+                name: "{{service_name}}"
+                volumeMounts: 
+                  - mountPath: /secret
+                    name: datastore
+                envFrom:
+                  - configMapRef:
+                      name: "env-config-v001"
+            restartPolicy: "Always"
+            volumes:
+              - name: datastore
+                secret:
+                  secretName: datastore-cert
 - id: portMapping
   variables:
    - name: svcport
