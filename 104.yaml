@@ -8,9 +8,14 @@ variables:
 - name: regions
   description: A list of AWS regions to deploy into
   type: list
+- name: application
+  type: string
+  default
 stages:
-- id: deploy
-  type: deploy
+- id: Deploy to Stage
+  type: deployManifest
+  stageTimeoutMs: 60000
+  manifestArtifactAccount: embedded-artifact
   config:
     clusters: |
       {% for region in regions %}
