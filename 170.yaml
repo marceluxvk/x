@@ -16,7 +16,7 @@ variables:
   description: description of the service port
   type: object
   example: |
-    items:
+    ports:
      - name: grpc
        port: 6565
        targetPort: 6565
@@ -88,6 +88,6 @@ modules:
         selector:
           app:  "app"
         ports: |
-         {% for port in ports.items %}
+         {% for port in ports.ports %}
            - {{port.name}}
          {% endfor %}
