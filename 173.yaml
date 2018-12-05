@@ -97,12 +97,4 @@ modules:
          {% for port in ports.ports %}
            - name: "{{port.name}}"
          {% endfor %}
-- id: port
-  usage: configure service port
-  variables:
-   - name: name
-   - port: port
-   - target: target
-  definition:
-   - name: "{{name}}"
   
