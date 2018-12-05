@@ -13,6 +13,13 @@ variables:
    defaultValue: payments
  - name: service_name
    description: The service name
+ - name: ports
+   descripton: information about service ports
+   type: object
+   example: |
+    - name: http
+      port: 8080
+      target: 8080
  - name: stageConfigVersion
    description: The environment configmap version
  - name: sandboxConfigVersion
@@ -28,12 +35,6 @@ variables:
  - name: jenkins_test_job
    description: The Jenkins job path to the automated test
    defaultValue: payments-tests/job/develop
- - name: service_port_name
-   description: The name of the service port
-   defaultValue: http
- - name: service_port
-   description: the external service port
-   defaultValue: 8080
  - name: balancer
    description: The type of the loadbalancer
    defaultValue: ClusterIP
@@ -76,9 +77,11 @@ stages:
         selector:
           app:  "{{service_name}}"
         ports:
-          - name: "{{service_port_name}}"
-            port: "{{service_port}}"
-            targetPort: "{{service_port}}"
+          {% for port in ports %}
+          - name: "{{port.name}}"
+            port: "{{port.port}}"
+            targetPort: "{{port.target}}"
+          {% endfor %}
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
