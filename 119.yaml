@@ -19,12 +19,6 @@ stages:
    config: |
       {% module kubemanifest %}
 modules:
-- id: teste
-  usage: Defines a deploy stage cluster using the AWS cloud provider
-  variables:
-  - name: ops
-  definition:
-    region: "{{ ops }}"
 - id: kubemanifest
   usage: KubeManigest template
   definition:
@@ -39,7 +33,7 @@ modules:
       - "stage.failed"
     sendNotifications: true
     moniker:
-      app: "teste"
+      app: "{{application}}"
     manifests:
     - apiVersion: v1
       kind: Service
