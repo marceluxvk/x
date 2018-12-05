@@ -53,26 +53,6 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config:
-    {% module teste  ops=application %}
- 
-modules:
- - id: teste
-   usage: Defines a deploy stage cluster using the AWS cloud provider
-   variables:
-   - name: ops
-   definition:
-    region: {{ ops }}
- - id: kubeservice
-   usage: apenas um teste
-   variables:
-    - name: name
-    - name: type
-    - name: port
-    - name: namespace
-    - name: application
-    - name: balancer
-    - name: config
-   definition: 
     manifestSource: text
     account: spinnaker-service-account
     cloudProvider: kubernetes
@@ -89,26 +69,26 @@ modules:
     - apiVersion: v1
       kind: Service
       metadata:
-        name: "{{name}}-service"
+        name: "{{service_name}}-service"
         namespace: "{{namespace}}-stage"
       spec:
         type: "{{balancer}}"
         selector:
-          app:  "{{name}}"
+          app:  "{{service_name}}"
         ports:
-          - name: "{{type}}"
-            port: "{{port}}"
-            targetPort: "{{port}}"
+          - name: "{{service_port_name}}"
+            port: "{{service_port}}"
+            targetPort: "{{service_port}}"
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
-        name: "{{name}}-deployment"
+        name: "{{service_name}}-deployment"
         namespace: "{{namespace}}-stage"
       spec:
         replicas: 1
         selector:
           matchLabels:
-            app: "{{name}}"
+            app: "{{service_name}}"
         strategy:
           rollingUpdate:
             maxSurge: 1
@@ -117,18 +97,177 @@ modules:
         template:
           metadata:
             labels:
-              app: "{{name}}"
+              app: "{{service_name}}"
           spec:
             containers:
-              - image: "asdfasdfasdf" #${ trigger[\"properties\"][\"ci.image\"] }
+              - image: "${ trigger[\"properties\"][\"ci.image\"] }"
                 imagePullPolicy: IfNotPresent
-                name: "{{name}}"
+                name: "{{service_name}}"
                 volumeMounts: 
                   - mountPath: /secret
                     name: datastore
                 envFrom:
                   - configMapRef:
-                      name: "env-config-{{config}}"
+                      name: "env-config-{{stageConfigVersion}}"
+            restartPolicy: "Always"
+            volumes:
+              - name: datastore
+                secret:
+                  secretName: datastore-cert
+ - id: Automated Tests
+   refId: 2
+   dependsOn:
+    - Deploy to Stage
+   continuePipeline: false
+   stageTimeoutMs: 60000
+   type: jenkins
+   failPipeline: true
+   config:
+     job: "{{jenkins_test_job}}"
+     master: jenkins
+     name: Automated Tests
+     notifications:
+      - address: "bexspay-team"
+        level: "stage"
+        type: "slack"
+        when: 
+        - "stage.complete"
+        - "stage.failed"
+     sendNotifications: true
+ - id: Update Sandbox
+   refId: 3
+   dependsOn:
+    - Automated Tests
+   type: deployManifest
+   stageTimeoutMs: 60000
+   manifestArtifactAccount: embedded-artifact
+   config:
+    manifestSource: text
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
+    notifications:
+    - address: "bexspay-team"
+      level: "stage"
+      type: "slack"
+      when: 
+      - "stage.failed"
+    sendNotifications: true
+    moniker:
+      app: "{{application}}"
+    manifests:
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{service_name}}-service"
+        namespace: "{{namespace}}-sandbox"
+      spec:
+        type: "{{balancer}}"
+        selector:
+          app:  "{{service_name}}"
+        ports:
+          - name: "{{service_port_name}}"
+            port: "{{service_port}}"
+            targetPort: "{{service_port}}"
+    - apiVersion: extensions/v1beta1
+      kind: Deployment
+      metadata:
+        name: "{{service_name}}-deployment"
+        namespace: "{{namespace}}-sandbox"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{service_name}}"
+        strategy:
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+          type: RollingUpdate
+        template:
+          metadata:
+            labels:
+              app: "{{service_name}}"
+          spec:
+            containers:
+              - image: "${ trigger[\"properties\"][\"ci.image\"] }"
+                imagePullPolicy: IfNotPresent
+                name: "{{service_name}}"
+                volumeMounts: 
+                  - mountPath: /secret
+                    name: datastore
+                envFrom:
+                  - configMapRef:
+                      name: "env-config-{{sandboxConfigVersion}}"
+            restartPolicy: "Always"
+            volumes:
+              - name: datastore
+                secret:
+                  secretName: datastore-cert
+ - id: Update Production
+   refId: 4
+   dependsOn:
+    - Update Sandbox
+   type: deployManifest
+   stageTimeoutMs: 60000
+   manifestArtifactAccount: embedded-artifact
+   config:
+    manifestSource: text
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
+    notifications:
+    - address: "bexspay-team"
+      level: "stage"
+      type: "slack"
+      when: 
+      - "stage.complete"
+      - "stage.failed"
+    sendNotifications: true
+    moniker:
+      app: "{{application}}"
+    manifests:
+    - apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{service_name}}-service"
+        namespace: "{{namespace}}-prod"
+      spec:
+        type: "{{balancer}}"
+        selector:
+          app:  "{{service_name}}"
+        ports:
+          - name: "{{service_port_name}}"
+            port: "{{service_port}}"
+            targetPort: "{{service_port}}"
+    - apiVersion: extensions/v1beta1
+      kind: Deployment
+      metadata:
+        name: "{{service_name}}-deployment"
+        namespace: "{{namespace}}-prod"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{service_name}}"
+        strategy:
+          rollingUpdate:
+            maxSurge: 1
+            maxUnavailable: 1
+          type: RollingUpdate
+        template:
+          metadata:
+            labels:
+              app: "{{service_name}}"
+          spec:
+            containers:
+              - image: "${ trigger[\"properties\"][\"ci.image\"] }"
+                imagePullPolicy: IfNotPresent
+                name: "{{service_name}}"
+                volumeMounts: 
+                  - mountPath: /secret
+                    name: datastore
+                envFrom:
+                  - configMapRef:
+                      name: "env-config-{{productionConfigVersion}}"
             restartPolicy: "Always"
             volumes:
               - name: datastore
