@@ -90,6 +90,6 @@ modules:
    - name: name
    - name: target
   definition:
-   name: "svc-{{port}}"
-   port: "{{port}}"
-   targetPort: "{{port}}"
+   name: "svc-{{target}}"
+   port: "{{target}}"
+   targetPort: "{{target}}"
