@@ -16,8 +16,9 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config:
-     {% module teste ops=application %}
-
+     {% for region in regions %}
+      - {% module teste ops=application %}
+     {% endfor %}
 modules:
 - id: teste
   usage: Defines a deploy stage cluster using the AWS cloud provider
