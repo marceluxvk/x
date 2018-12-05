@@ -78,9 +78,7 @@ stages:
           app:  "{{service_name}}"
         ports:
           {% for port in ports %}
-          - name: http
-            port: 8080
-            targetPort: 8080
+          - {% module kubeports name=port.name port=port.port %}
           {% endfor %}
     - apiVersion: extensions/v1beta1
       kind: Deployment
@@ -189,7 +187,8 @@ stages:
         template:
           metadata:
             labels:
-              app: "{{service_name}}"
+              app: "{{service_name}}"      strategy: highlander
+
           spec:
             containers:
               - image: "${ trigger[\"properties\"][\"ci.image\"] }"
@@ -276,3 +275,15 @@ stages:
               - name: datastore
                 secret:
                   secretName: datastore-cert
+modules:
+ - id: kubeports
+   usage: define service structure
+   variables:
+    - name: name
+      description: service name
+    - name: port
+      description: the service port
+   definition:
+     name: "{{ name }}"
+            port: "{{ port }}"
+            targetPort: "{{ port }}"
