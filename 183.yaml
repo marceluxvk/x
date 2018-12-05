@@ -60,9 +60,9 @@ modules:
   definition:
     manifestSource: text
     account: spinnaker-service-account
-    cloudProvider: kubernetes6565
+    cloudProvider: kubernetes
     notifications:
-    - address: "bexspay-team"6565
+    - address: "bexspay-team"
       level: "stage"
       type: "slack"
       when: 
