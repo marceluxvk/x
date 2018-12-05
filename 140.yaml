@@ -13,6 +13,15 @@ variables:
   description: the service name without sufix
 - name: ns
   description: the prefix of the namespaces
+- name: stage
+  description: deploy on stage
+  type: boolean
+- name: sandbox
+  description: deploy on sandbox
+  type: boolean
+- name: production
+  description: deploy to production
+  type: boolean
 stages:
  - id: Deploy to Stage
    type: deployManifest
