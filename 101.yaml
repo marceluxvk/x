@@ -3,8 +3,7 @@ metadata:
   name: Template2
   description: Modules example template
   owner: marcelo.lima@bexsbanco.com.br
-  scopes: 
-   - global
+  scopes: [global]
 variables:
 - name: regions
   description: A list of AWS regions to deploy into
@@ -17,7 +16,6 @@ stages:
       {% for region in regions %}
       - {% module teste ops=region %}
       {% endfor %}
-
 modules:
 - id: teste
   usage: Defines a deploy stage cluster using the AWS cloud provider
