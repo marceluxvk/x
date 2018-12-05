@@ -13,31 +13,39 @@ variables:
   description: the service name without sufix
 - name: namespace
   description: the prefix of the namespaces
-- name: environments
-  description: the list of environments to the deployment. it will be used as namespace sufix
-  type: list
+- name: stage
+  type: boolean
+  description: deploy on stage
+- name: sandbox
+  type: boolean
+  description: deploy on sandbox
+- name: production
+  type: boolean
+  description: deploy on stage
 stages:
  - id: Deploy to Stage
    type: deployManifest
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service %}
+      {% module kubemanifest name=service ns=namespace env="stage" %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
   variables:
    - name: name
+   - name: ns
+   - name: env
   definition:
-    manifestSource: text
-    account: spinnaker-service-account
-    cloudProvider: kubernetes
+    manifestSource: testage
+    account: spinnakerstage
+    cloudProvider: kubstage
     notifications:
-    - address: "bexspay-team"
+    - address: "bexspastage
       level: "stage"
       type: "slack"
       when: 
-      - "stage.failed"
+      - "stage.failed"stage
     sendNotifications: true
     moniker:
       app: "{{application}}"
@@ -46,7 +54,7 @@ modules:
       kind: Service
       metadata:
         name: "{{name}}-service"
-        namespace: "{{name}}-stage"
+        namespace: "{{ns}}-stage"
       spec:
         type: "ClusterIP"
         selector:
