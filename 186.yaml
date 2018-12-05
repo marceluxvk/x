@@ -80,7 +80,7 @@ modules:
         type: "ClusterIP"
         selector:
           app:  "app"
-        ports: |
+        ports:
          {% for port in ports %}
            {% module portMapping name=port target=port %}
          {% endfor %}
