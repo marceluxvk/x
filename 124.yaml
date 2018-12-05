@@ -22,15 +22,12 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% for ns in namespace %}
-       {% module kubemanifest name=service namespace=ns %}
-      {% endfor %}
+      {% module kubemanifest name=service %}
 modules:
 - id: kubema- name: environments
   usage: Kub  description: the list of environments to the deployment
   variables:  type: list
    - name: name
-   - name: namespace
   definition:
     manifestSource: text
     account: spinnaker-service-account
@@ -49,7 +46,7 @@ modules:
       kind: Service
       metadata:
         name: "{{name}}-service"
-        namespace: "{{name}}-{{namespace}}"
+        namespace: "{{name}}-stage"
       spec:
         type: "ClusterIP"
         selector:
