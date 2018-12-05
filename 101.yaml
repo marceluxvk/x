@@ -1,9 +1,10 @@
-id: myExampleTemplate
+id: Template2
 metadata:
-  name: myExampleTemplate
+  name: Template2
   description: Modules example template
-  owner: example@example.com
-  scopes: [global]
+  owner: marcelo.lima@bexsbanco.com.br
+  scopes: 
+   - global
 variables:
 - name: regions
   description: A list of AWS regions to deploy into
