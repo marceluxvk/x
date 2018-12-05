@@ -16,12 +16,15 @@ variables:
 - name: stage
   description: deploy on stage
   type: boolean
+  defaultValue: true
 - name: sandbox
   description: deploy on sandbox
   type: boolean
 - name: production
+  defaultValue: false
   description: deploy to production
   type: boolean
+  defaultValue: true
 stages:
  - id: Deploy to Stage
    type: deployManifest
