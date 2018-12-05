@@ -13,6 +13,7 @@ variables:
   description: the service name without sufix
 - name: ns
   description: the prefix of the namespaces
+  type: string
 - name: stage
   description: deploy on stage
   type: boolean
@@ -32,7 +33,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="stage" %}
+      {% module kubemanifest name=service target="stage" ns=ns%}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
