@@ -15,7 +15,7 @@ stages:
    type: deployManifest
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
-   config:
+   config: |
      {% for region in regions %}
       - {% module teste ops=application %}
      {% endfor %}
