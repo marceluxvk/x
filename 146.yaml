@@ -11,7 +11,7 @@ variables:
 - name: service
   type: string
   description: the service name without sufix
-- name: ns
+- name: namespace
   description: the prefix of the namespaces
   type: string
 - name: stage
@@ -33,13 +33,14 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="stage" ns=ns%}
+      {% module kubemanifest name=service target="stage" ns=namespace %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
   variables:
    - name: name
    - name: target
+   - name: ns
   definition:
     manifestSource: text
     account: spinnaker-service-account
