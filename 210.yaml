@@ -73,6 +73,18 @@ stages:
         - "stage.complete"
         - "stage.failed"
      sendNotifications: true
+ - id: Deploy to Sandbox
+   type: deployManifest
+   stageTimeoutMs: 60000
+   manifestArtifactAccount: embedded-artifact
+   config: |
+      {% module kubemanifest name=service target="sandbox" ns=namespace ports=ports %}
+ - id: Deploy to Prod
+   type: deployManifest
+   stageTimeoutMs: 60000
+   manifestArtifactAccount: embedded-artifact
+   config: |
+      {% module kubemanifest name=service target="prod" ns=namespace ports=ports %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
