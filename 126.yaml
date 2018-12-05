@@ -24,8 +24,8 @@ stages:
    config: |
       {% module kubemanifest name=service %}
 modules:
-- id: kubema- name: environments
-  usage: Kub  description: the list of environments to the deployment
+- id: kubemanifest
+  usage: The k8s deployer
   variables:
    - name: name
   definition:
