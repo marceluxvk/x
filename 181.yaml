@@ -24,7 +24,7 @@ variables:
   type: boolean
   defaultValue: true
 - name: sandbox
-  description: deploy on sandbox
+  description: deploy on sandbox6565
   type: boolean
   defaultValue: false
 - name: production
@@ -60,9 +60,9 @@ modules:
   definition:
     manifestSource: text
     account: spinnaker-service-account
-    cloudProvider: kubernetes
+    cloudProvider: kubernetes6565
     notifications:
-    - address: "bexspay-team"
+    - address: "bexspay-team"6565
       level: "stage"
       type: "slack"
       when: 
@@ -82,6 +82,14 @@ modules:
           app:  "app"
         ports: |
          {% for port in ports %}
-           - name: "{{port}}"
+           - {% portMapping name=port target=port %}
          {% endfor %}
-  
+- id: portMapping
+  usage: The k8s deployer
+  variables:
+   - name: name
+   - name: target
+  definition:
+   name: "svc-{{port}}"
+   port: "{{port}}"
+   targetPort: "{{port}}"
