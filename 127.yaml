@@ -26,15 +26,15 @@ modules:
   variables:
    - name: name
   definition:
-    manifestSource: testage
-    account: spinnakerstage
-    cloudProvider: kubstage
+    manifestSource: text
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
     notifications:
-    - address: "bexspastage
+    - address: "bexspay-team"
       level: "stage"
       type: "slack"
       when: 
-      - "stage.failed"stage
+      - "stage.failed"
     sendNotifications: true
     moniker:
       app: "{{application}}"
