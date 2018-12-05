@@ -54,7 +54,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="stage" ns=namespace ports=ports.items %}
+      {% module kubemanifest name=service target="stage" ns=namespace ports=ports %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
@@ -63,7 +63,7 @@ modules:
    - name: target
    - name: ns
    - name: ports
-     type: list
+     type: object
   definition:
     manifestSource: text
     account: spinnaker-service-account
@@ -88,6 +88,6 @@ modules:
         selector:
           app:  "app"
         ports: |
-         {% for port in ports %}
+         {% for port in ports.items %}
           - name: {{port.name}}
          {% endfor %}
