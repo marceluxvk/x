@@ -82,5 +82,10 @@ modules:
           app:  "app"
         ports: |
          {% for port in ports %}
-           - name: "{{ port }}"
+           {% module portMapping svcport=port %}
          {% endfor %}
+-id: portMapping
+ variables:
+   - name: svcport
+ definition:
+   name: "{{svcport}}"
