@@ -14,15 +14,7 @@ variables:
   type: string
 - name: ports
   description: description of the service port
-  type: object
-  example: |
-    ports:
-     - name: grpc
-       port: 6565
-       targetPort: 6565
-     - name: http
-       port: 8080
-       targetPort: 8080
+  type: list
 - name: namespace
   description: the prefix of the namespaces
   type: string
@@ -63,12 +55,12 @@ modules:
    - name: target
    - name: ns
    - name: ports
-     type: object
+     type: list
   definition:
-    manifestSource: text
-    account: spinnaker-service-account
-    cloudProvider: kubernetes
-    notifications:
+    manifestSource.
+    account: spinn.
+    cloudProvider:.
+    notifications:.
     - address: "bexspay-team"
       level: "stage"
       type: "slack"
@@ -88,7 +80,9 @@ modules:
         selector:
           app:  "app"
         ports: |
-         {% for port in ports.ports %}
-           - name: "{{port.name}}"
+         {% for port in ports %}
+           - name: "svc-{{port}}"
+             port: "{{port}}"
+             targetPort: "{{port}}"
          {% endfor %}
   
