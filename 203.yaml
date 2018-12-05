@@ -87,7 +87,7 @@ modules:
           app:  "app"
         ports: |
           {% for port in ports.items %}
-          - {% module portMapping svcport=port.name svcport=port.port %}
+          - {% module portMapping svcname=port.name svcport=port.port %}
           {% endfor %}
 - id: portMapping
   variables:
