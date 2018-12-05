@@ -76,9 +76,7 @@ stages:
         selector:
           app:  "{{service_name}}"
         ports:
-          - name: "{{service_port_name}}"
-            port: "{{service_port}}"
-            targetPort: "{{service_port}}"
+          - {% module kubeservice name=service_name port=service_port %}
     - apiVersion: extensions/v1beta1
       kind: Deployment
       metadata:
@@ -283,4 +281,3 @@ modules:
     name: "{{ name }}"
     port: "{{ port }}"
     targetPort: "{{ port }}"
-      
