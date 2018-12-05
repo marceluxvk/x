@@ -3,7 +3,7 @@ id: services-template
 metadata:
  description: Service Template. Generates Deployment, Replicaset and POD
  name: Service Deployment Template
- owner: marcelo.lima@bexsbanco.com.br
+ owner: marcelo.lima@bexsbanco.com.br 
  scope: 
   - global
 protected: false
