@@ -180,9 +180,9 @@ modules:
                       name: "env-config-v001"
             restartPolicy: "Always"
             volumes:
-              - name: datastore
-                secret:
-                  secretName: datastore-cert
+              {% for secret in secrets %}
+              - {% module secretMapping secname=secret.name seccert=secret.secretName %}
+              {% endfor %}
 - id: portMapping
   variables:
    - name: svcport
@@ -198,4 +198,11 @@ modules:
   definition:
     name: "{{secname}}"
     mountPath: "{{secmount}}"
-    
+- id: secretMapping
+  variables:
+   - name: secname
+   - name: seccert
+  definition:
+    name: "{{secname}}"
+      secret:
+        secretName: "{{seccert}}"
