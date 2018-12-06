@@ -199,8 +199,8 @@ modules:
               {% for secret in secrets %}
               - {% module secretMapping secname=secret.name seccert=secret.secretName %}
               {% endfor %}
-    {% for ing in %}
-    - {% module ingress inghost=ingress %}
+    {% for ing in inghost %}
+    - {% module ingress inghost=ing.fqdn %}
     {% endfor %}
 - id: portMapping
   variables:
