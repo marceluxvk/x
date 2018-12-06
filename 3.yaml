@@ -204,12 +204,12 @@ modules:
         template:
           metadata:
             labels:
-              app: "sandbox{{name}}"
-          spec:sandbox
-            containesandboxrs:
-              - imagsandboxe: "${ trigger[\"properties\"][\"ci.image\"] }"
-                imagsandboxePullPolicy: IfNotPresent
-                namesandbox: "{{name}}"
+              app: "{{name}}"
+          spec:
+            containers:
+              - image: "${ trigger[\"properties\"][\"ci.image\"] }"
+                imagePullPolicy: IfNotPresent
+                name: "{{name}}"
                 volumeMounts: |
                   {% for secret in secrets %}
                   - {% module mountVolume secname=secret.name secmount=secret.mount %}
