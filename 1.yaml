@@ -17,10 +17,30 @@ variables:
   type: object
   defaultValue:
     ports:
-     - port: 8080
+     - port: 8081
        name: "http"
      - port: 6568
        name: "grpc"
+    configmap:
+     - stage:
+       - name: env-config-v001
+     - sandbox:
+       - name: env-config-v001
+     - prod:
+       - name: env-config-v001
+    secret:
+     - stage:
+       - name: datastore
+         path: /secret
+         secretName: datastore-cert
+     - sandbox:
+       - name: datastore
+         path: /secret
+         secretName: datastore-cert
+     - prod:
+       - name: datastore
+         path: /secret
+         secretName: datastore-cert
 - name: stage
   description: deploy on stage
   type: boolean
