@@ -98,7 +98,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="sandbox" ns=application config=config %}
+      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.configmap.sandbox %}
  - id: Deploy to Prod
    refId: 3
    type: deployManifest
@@ -107,7 +107,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="prod" ns=application config=config %}
+      {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.configmap.prod %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
