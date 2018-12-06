@@ -81,9 +81,19 @@ stages:
    manifestArtifactAccount: embedded-artifactports
    config: |
       {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
- - id: Automated Tests
+ - id: Config Dev Ingress
+   type: deployManifest
+   stageTimeoutMs: 60000
    dependsOn:
     - Deploy to Stage
+   manifestArtifactAccount: embedded-artifactports
+   config: |
+     {% module ingress name=service ns=application ingress=config.stage.ingress target=target %}
+   when:
+    - "{{config.stage.ingress != null}}"
+ - id: Automated Tests
+   dependsOn:
+    - Config Dev Ingress
    continuePipeline: false
    stageTimeoutMs: 60000
    type: jenkins
