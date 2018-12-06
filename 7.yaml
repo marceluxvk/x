@@ -181,7 +181,7 @@ stages:
    config: |
      {% module ingress name=service ns=application ingress=config.prod.ingress target="prod" %}
    when:
-    - "{{config.prod.ingress != null}}"
+    - "{{config.prod.ingress != null && production_deploy == true}}"
  - id: Prod Smoke Test
    dependsOn:
     - Config Prod Ingress
