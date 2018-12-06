@@ -88,18 +88,31 @@ stages:
     - Deploy to Stage
    manifestArtifactAccount: embedded-artifactports
    config: 
-    - apiVersion: extensions/v1beta1
-      kind: Ingress
-      metadata:
-        annotations:
-          kubernetes.io/ingress.class: istio
-        name: "{{service}}-ingress"
-        namespace: "{{application}}-stage"
-      spec:
-        rules: |
-          {% for item in config.stage.ingress.paths %}
-          - {% module ingress inghost=config.stage.ingress.fqdn name=service %}
-          {% endfor %}
+    manifestSource: text
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
+    notifications:
+    - address: "bexspay-team"
+      level: "stage"
+      type: "slack"
+      when: 
+      - "stage.failed"
+    sendNotifications: true
+    moniker:
+      app: "{{application}}"
+    manifests:
+     - apiVersion: extensions/v1beta1
+       kind: Ingress
+       metadata:
+         annotations:
+           kubernetes.io/ingress.class: istio
+         name: "{{service}}-ingress"
+         namespace: "{{application}}-stage"
+       spec:
+         rules: |
+           {% for item in config.stage.ingress.paths %}
+           - {% module ingress inghost=config.stage.ingress.fqdn name=service %}
+           {% endfor %}
  - id: Automated Tests
    refId: 10
    dependsOn:
