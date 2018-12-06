@@ -84,6 +84,8 @@ stages:
  - id: Config Dev Ingress
    type: deployManifest
    stageTimeoutMs: 60000
+   dependsOn:
+    - Deploy to Stage
    manifestArtifactAccount: embedded-artifactports
    config: 
     - apiVersion: extensions/v1beta1
@@ -96,12 +98,11 @@ stages:
       spec:
         rules: |
           {% for item in config.stage.ingress.paths %}
-          - {% module ingress inghost=ingress.fqdn name=service %}
+          - {% module ingress inghost=config.stage.ingress.fqdn name=service %}
           {% endfor %}
  - id: Automated Tests
-   refId: 2
    dependsOn:
-    - Deploy to Stage
+    - Config Dev Ingress
    continuePipeline: false
    stageTimeoutMs: 60000
    type: jenkins
