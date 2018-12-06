@@ -170,9 +170,10 @@ modules:
               - image: "${ trigger[\"properties\"][\"ci.image\"] }"
                 imagePullPolicy: IfNotPresent
                 name: "{{name}}"
-                volumeMounts: 
-                  - mountPath: /secret
-                    name: datastore
+                volumeMounts: |
+                  {% for secret in secrets %}
+                  - {% module mountVolume name=secret.name path=secret.path %}
+                  {% endfor %}
                 envFrom:
                   - configMapRef:
                       name: "env-config-v001"
@@ -189,3 +190,11 @@ modules:
     name: "{{svcname}}"
     port: "{{svcport}}" 
     targetPort: "{{svcport}}"
+- id: mountVolume:
+  variables:
+   - name: name
+   - path: path
+  definition:
+    name: "{{name}}"
+    mountPath: "{{path}}"
+    
