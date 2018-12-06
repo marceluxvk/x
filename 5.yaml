@@ -81,7 +81,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifactports
    config: |
-      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap ingress=config.prod.ingress %}
+      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap ingress=config.stage.ingress %}
  - id: Automated Tests
    refId: 2
    dependsOn:
@@ -110,7 +110,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap ingress=config.prod.ingress %}
+      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap ingress=config.sandbox.ingress %}
  - id: Deploy to Prod
    refId: 3
    type: deployManifest
@@ -133,7 +133,7 @@ modules:
      type: object
    - name: maps
      type: object
-     name: ingress
+   - name: ingress
      type: object
   definition:
     manifestSource: text
@@ -208,7 +208,7 @@ modules:
         namespace: "{{ns}}-{{target}}"
       spec:
         rules: |
-          {% for ing in inghost %}
+          {% for ing in ingress %}
           - {% module ingress inghost=ing.fqdn name=name %}
           {% endfor %}
 - id: portMapping
