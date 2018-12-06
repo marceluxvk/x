@@ -100,19 +100,8 @@ stages:
     sendNotifications: true
     moniker:  
       app: "{{application}}"
-    manifests:  
-     - apiVersion: extensions/v1beta1
-       kind: Ingress
-       metadata:  
-         annotations:
-           kubernetes.io/ingress.class: istio
-         name: "{{service}}-ingress"
-         namespace: "{{application}}-stage"
-       spec:
-         rules: |
-           {% for item in config.stage.ingress.paths %}
-           - {% module ingress inghost=config.stage.ingress.fqdn name=service %}
-           {% endfor %}
+    manifests: |
+     {% module ingress service=service ingress=config.stage.ingress %}
    when:
     - "{{config.stage.ingress != null}}"
  - id: Automated Tests
@@ -257,6 +246,24 @@ modules:
     configMapRef:
       name: "{{mapname}}"
 - id: ingress
+  variable:
+    - name: service
+    - name: ingress
+      type: object
+  definition:
+    apiVersion: extensions/v1beta1
+    kind: Ingress
+    metadata:  
+      annotations:
+        kubernetes.io/ingress.class: istio
+      name: "{{service}}-ingress"
+      namespace: "{{application}}-stage"
+    spec:
+      rules: |
+        {% for item in ingress.paths %}
+        - {% module ingressItem inghost=ingress.fqdn name=service %}
+        {% endfor %}
+- id: ingressItem
   variables:
    - name: inghost
    - name: name
