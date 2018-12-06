@@ -199,9 +199,6 @@ modules:
               {% for secret in secrets %}
               - {% module secretMapping secname=secret.name seccert=secret.secretName %}
               {% endfor %}
-    {% for ing in inghost %}
-    - {% module ingress inghost=ing.fqdn %}
-    {% endfor %}
 - id: portMapping
   variables:
    - name: svcport
@@ -234,6 +231,7 @@ modules:
 - id: ingress
   variables:
    - name: inghost
+   - name: ns
   definition:
     apiVersion: extensions/v1beta1
     kind: Ingress
