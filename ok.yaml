@@ -21,13 +21,6 @@ variables:
        name: "http"
      - port: 6568
        name: "grpc"
-    ingress:
-     stage:
-     sandbox:
-     prod:
-      - port: 8081
-        path: /v1/consumer.*
-        host: internals.bexs.com.br
     stage:
      configmap:
        - name: env-config-v001
@@ -42,6 +35,11 @@ variables:
        - name: datastore
          mount: "/secret"
          secretName: datastore-cert
+     ingress:
+       fqdn: sandbox.bexs.com.br
+       paths:
+         - path: /v1/consumers.*
+           port: 8081
     prod:
      configmap:
        - name: env-config-v001
@@ -49,6 +47,11 @@ variables:
        - name: datastore
          mount: "/secret"
          secretName: datastore-cert
+     ingress:
+       fqdn: internals.bexs.com.br
+       paths:
+         - path: /v1/consumers.*
+           port: 8081
 - name: stage
   description: deploy on stage
   type: boolean
@@ -78,9 +81,19 @@ stages:
    manifestArtifactAccount: embedded-artifactports
    config: |
       {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
- - id: Automated Tests
+ - id: Config Stage Ingress
+   type: deployManifest
+   stageTimeoutMs: 60000
    dependsOn:
     - Deploy to Stage
+   manifestArtifactAccount: embedded-artifactports
+   config: |
+     {% module ingress name=service ns=application ingress=config.stage.ingress target="stage" %}
+   when:
+    - "{{config.stage.ingress != null}}"
+ - id: Automated Tests
+   dependsOn:
+    - Config Stage Ingress
    continuePipeline: false
    stageTimeoutMs: 60000
    type: jenkins
@@ -105,14 +118,34 @@ stages:
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap %}
+ - id: Configuring Sandbox Ingress
+   type: deployManifest
+   stageTimeoutMs: 60000
+   dependsOn:
+    - Deploy to Sandbox
+   manifestArtifactAccount: embedded-artifactports
+   config: |
+     {% module ingress name=service ns=application ingress=config.sandbox.ingress target="sandbox" %}
+   when:
+    - "{{config.sandbox.ingress != null}}"
  - id: Deploy to Prod
    type: deployManifest
    dependsOn:
-    - Deploy to Sandbox
+    - Configuring Sandbox Ingress
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap %}
+ - id: Config Prod Ingress
+   type: deployManifest
+   stageTimeoutMs: 60000
+   dependsOn:
+    - Deploy to Prod
+   manifestArtifactAccount: embedded-artifactports
+   config: |
+     {% module ingress name=service ns=application ingress=config.prod.ingress target="prod" %}
+   when:
+    - "{{config.prod.ingress != null}}"
 modules:
 - id: kubemanifest
   usage: The k8s deployer
@@ -219,3 +252,49 @@ modules:
   definition:
     configMapRef:
       name: "{{mapname}}"
+      
+- id: ingress
+  variables:
+    - name: name
+    - name: ns
+    - name: target
+    - name: ingress
+      type: object
+  definition:
+    manifestSource: text
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
+    notifications:
+    - address: "bexspay-team"
+      level: "stage"
+      type: "slack"
+      when:   
+      - "stage.failed"
+    sendNotifications: true
+    moniker:  
+      app: "{{ns}}"
+    manifests:
+     - apiVersion: extensions/v1beta1
+       kind: Ingress
+       metadata:  
+         annotations:
+           kubernetes.io/ingress.class: istio
+         name: "{{name}}-ingress"
+         namespace: "{{ns}}-{{target}}"
+       spec:
+         rules: |
+           {% for item in ingress.paths %}
+           - {% module ingressItem inghost=ingress.fqdn name=name %}
+           {% endfor %}
+- id: ingressItem
+  variables:
+   - name: inghost
+   - name: name
+  definition:
+    host: "{{inghost}}"
+    http:
+      paths:
+        - backend:
+            serviceName: "{{name}}-service"
+            servicePort: 8080
+          path: /v1/payments.*
