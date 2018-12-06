@@ -85,7 +85,7 @@ configuration:
     type: jenkins
  notifications:
   - address: "bexspay-team"
-    level: "stage"
+    level: "pipeline"
     type: "slack"
     when: 
      - "pipeline.starting"
