@@ -209,7 +209,7 @@ modules:
       spec:
         rules: |
           {% for ing in inghost %}
-          - {% module ingress inghost=ing.fqdn %}
+          - {% module ingress inghost=ing.fqdn name=name %}
           {% endfor %}
 - id: portMapping
   variables:
@@ -243,13 +243,13 @@ modules:
 - id: ingress
   variables:
    - name: inghost
-   - name: ns
+   - name: name
   definition:
     host: "{{inghost}}"
     http:
       paths:
         - backend:
-            serviceName: "{{service}}-service"
+            serviceName: "{{name}}-service"
             servicePort: 8080
           path: /v1/payments.*
         - backend:
