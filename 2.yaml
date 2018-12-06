@@ -122,7 +122,7 @@ stages:
    type: deployManifest
    stageTimeoutMs: 60000
    dependsOn:
-    - Deploy to Stage
+    - Deploy to Sandbox
    manifestArtifactAccount: embedded-artifactports
    config: |
      {% module ingress name=service ns=application ingress=config.sandbox.ingress target="sandbox" %}
