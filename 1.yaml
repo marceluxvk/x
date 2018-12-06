@@ -127,7 +127,7 @@ stages:
    config: |
      {% module ingress name=service ns=application ingress=config.sandbox.ingress target="sandbox" %}
    when:
-    - "{{config.stage.ingress != null}}"
+    - "{{config.sandbox.ingress != null}}"
  - id: Deploy to Prod
    type: deployManifest
    dependsOn:
