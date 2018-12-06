@@ -111,8 +111,8 @@ stages:
         - "stage.failed"
      sendNotifications: true
  - id: Deploy to Sandbox
-   type: depingressyManifest
-   deployManifest:
+   type: deployManifest
+   dependsOn:
     - Automated Tests
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
