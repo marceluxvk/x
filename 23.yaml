@@ -81,7 +81,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifactports
    config: |
-      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
+      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap ingress=config.prod.ingress %}
  - id: Automated Tests
    refId: 2
    dependsOn:
@@ -110,7 +110,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap %}
+      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap ingress=config.prod.ingress %}
  - id: Deploy to Prod
    refId: 3
    type: deployManifest
@@ -119,7 +119,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap %}
+      {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap ingress=config.prod.ingress %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
@@ -132,6 +132,8 @@ modules:
    - name: secrets
      type: object
    - name: maps
+     type: object
+     name: ingress
      type: object
   definition:
     manifestSource: text
@@ -197,6 +199,9 @@ modules:
               {% for secret in secrets %}
               - {% module secretMapping secname=secret.name seccert=secret.secretName %}
               {% endfor %}
+    {% for ing in %}
+    - {% module ingress inghost=ingress %}
+    {% endfor %}
 - id: portMapping
   variables:
    - name: svcport
@@ -228,7 +233,7 @@ modules:
       name: "{{mapname}}"
 - id: ingress
   variables:
-   - name:
+   - name: inghost
   definition:
     apiVersion: extensions/v1beta1
     kind: Ingress
