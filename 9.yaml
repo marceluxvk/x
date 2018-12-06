@@ -31,15 +31,15 @@ variables:
     secret:
      - stage:
        - name: datastore
-         path: "/secret"
+         mount: "/secret"
          secretName: datastore-cert
      - sandbox:
        - name: datastore
-         path: "/secret"
+         mount: "/secret"
          secretName: datastore-cert
      - prod:
        - name: datastore
-         path: "/secret"
+         mount: "/secret"
          secretName: datastore-cert
 - name: stage
   description: deploy on stage
@@ -172,7 +172,7 @@ modules:
                 name: "{{name}}"
                 volumeMounts: |
                   {% for secret in secrets %}
-                  - {% module mountVolume name=secret.name path=secret.path %}
+                  - {% module mountVolume name=secret.name mount=secret.mount %}
                   {% endfor %}
                 envFrom:
                   - configMapRef:
@@ -193,8 +193,8 @@ modules:
 - id: mountVolume
   variables:
    - name: name
-   - name: path
+   - name: mount
   definition:
     name: "{{name}}"
-    mountPath: "{{path}}"
+    mountPath: "{{mount}}"
     
