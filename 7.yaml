@@ -80,27 +80,14 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifactports
    config: |
-      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
+      {% module kubemanifest service=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
  - id: Config Dev Ingress
    type: deployManifest
    stageTimeoutMs: 60000
    dependsOn:
     - Deploy to Stage
    manifestArtifactAccount: embedded-artifactports
-   config: 
-    manifestSource: text
-    account: spinnaker-service-account
-    cloudProvider: kubernetes
-    notifications:
-    - address: "bexspay-team"
-      level: "stage"
-      type: "slack"
-      when:   
-      - "stage.failed"
-    sendNotifications: true
-    moniker:  
-      app: "{{application}}"
-    manifests: |
+   config: |
      {% module ingress name=service ingress=config.stage.ingress ns=application target=target %}
    when:
     - "{{config.stage.ingress != null}}"
@@ -254,18 +241,31 @@ modules:
     - name: ns
     - name: target
   definition:
-    apiVersion: extensions/v1beta1
-    kind: Ingress
-    metadata:  
-      annotations:
-        kubernetes.io/ingress.class: istio
-      name: "{{service}}-ingress"
-      namespace: "{{ns}}-{{target}}"
-    spec:
-      rules: |
-        {% for item in ingress.paths %}
-        - {% module ingressItem inghost=ingress.fqdn name=service %}
-        {% endfor %}
+    manifestSource: text
+    account: spinnaker-service-account
+    cloudProvider: kubernetes
+    notifications:
+    - address: "bexspay-team"
+      level: "stage"
+      type: "slack"
+      when:   
+      - "stage.failed"
+    sendNotifications: true
+    moniker:  
+      app: "{{ns}}"
+    manifests:
+     - apiVersion: extensions/v1beta1
+       kind: Ingress
+       metadata:  
+         annotations:
+           kubernetes.io/ingress.class: istio
+         name: "{{service}}-ingress"
+         namespace: "{{ns}}-{{target}}"
+       spec:
+         rules: |
+           {% for item in ingress.paths %}
+           - {% module ingressItem inghost=ingress.fqdn name=service %}
+           {% endfor %}
 - id: ingressItem
   variables:
    - name: inghost
