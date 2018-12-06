@@ -284,12 +284,13 @@ modules:
        spec:
          rules: |
            {% for item in ingress.paths %}
-           - {% module ingressItem inghost=ingress.fqdn name=name %}
+           - {% module ingressItem inghost=ingress.fqdn name=name ingpaths=ingress.paths %}
            {% endfor %}
 - id: ingressItem
   variables:
    - name: inghost
    - name: name
+   - name: ingpaths
   definition:
     host: "{{inghost}}"
     http:
