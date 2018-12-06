@@ -294,8 +294,23 @@ modules:
   definition:
     host: "{{inghost}}"
     http:
-      paths:
+      paths: |
+        {% for path in ingpaths %}
+        - {% module ingressPath name=name port=path.port url=path.path %}
+        {% endfor %} 
         - backend:
             serviceName: "{{name}}-service"
             servicePort: 8080
           path: /v1/payments.*
+- id: ingressPath
+  variables:
+   - name: name
+   - name: port
+   - name: url
+  definition:
+    backend:
+      serviceName: "{{name}}-service"
+      servicePort: "{{port}}"
+    path: "{{url}}"
+   
+  
