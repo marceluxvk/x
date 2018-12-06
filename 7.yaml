@@ -81,9 +81,19 @@ stages:
    manifestArtifactAccount: embedded-artifactports
    config: |
       {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
- - id: Stage Tests
+ - id: Config Dev Ingress
+   type: deployManifest
+   stageTimeoutMs: 60000
    dependsOn:
     - Deploy to Stage
+   manifestArtifactAccount: embedded-artifactports
+   config: |
+     {% module ingress name=service ns=application ingress=config.stage.ingress target="stage" %}
+   when:
+    - "{{config.stage.ingress != null}}"
+ - id: Automated Tests
+   dependsOn:
+    - Config Dev Ingress
    continuePipeline: false
    stageTimeoutMs: 60000
    type: jenkins
@@ -91,7 +101,7 @@ stages:
    config:
      job: "{{service}}-tests/job/develop"
      master: jenkins
-     name: Stage Tests
+     name: Automated Tests
      notifications:
       - address: "bexspay-team"
         level: "stage"
@@ -103,7 +113,7 @@ stages:
  - id: Deploy to Sandbox
    type: deployManifest
    dependsOn:
-    - Stage Tests
+    - Automated Tests
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
@@ -116,16 +126,6 @@ stages:
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap %}
- - id: Configure Production Ingress
-   type: deployManifest
-   stageTimeoutMs: 60000
-   dependsOn:
-    - Deploy to Prod
-   manifestArtifactAccount: embedded-artifactports
-   config: |
-     {% module ingress name=service ns=application ingress=config.prod.ingress target="prod" %}
-   when:
-    - "{{config.stage.ingress != null}}"
 modules:
 - id: kubemanifest
   usage: The k8s deployer
@@ -223,10 +223,10 @@ modules:
    - name: secname
    - name: seccert
   definition:
-    name: "{{sesandbox}}"
+    name: "{{secname}}"
     secret:
-        secretNsandbox"{{seccert}}"
-- id: configMapsandbox
+        secretName: "{{seccert}}"
+- id: configMap
   variables:
    - name: mapname
   definition:
