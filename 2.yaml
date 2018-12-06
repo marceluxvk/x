@@ -101,6 +101,7 @@ stages:
           - {% module ingress inghost=config.stage.ingress.fqdn name=service %}
           {% endfor %}
  - id: Automated Tests
+   refId: 10
    dependsOn:
     - Config Dev Ingress
    continuePipeline: false
