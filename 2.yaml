@@ -81,7 +81,7 @@ stages:
    manifestArtifactAccount: embedded-artifactports
    config: |
       {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
- - id: Configuring Stage Ingress
+ - id: Config Stage Ingress
    type: deployManifest
    stageTimeoutMs: 60000
    dependsOn:
@@ -93,7 +93,7 @@ stages:
     - "{{config.stage.ingress != null}}"
  - id: Automated Tests
    dependsOn:
-    - Configuring Stage Ingress
+    - Config Stage Ingress
    continuePipeline: false
    stageTimeoutMs: 60000
    type: jenkins
@@ -136,6 +136,16 @@ stages:
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap %}
+ - id: Config Prod Ingress
+   type: deployManifest
+   stageTimeoutMs: 60000
+   dependsOn:
+    - Deploy to Prod
+   manifestArtifactAccount: embedded-artifactports
+   config: |
+     {% module ingress name=service ns=application ingress=config.prod.ingress target="prod" %}
+   when:
+    - "{{config.prod.ingress != null}}"
 modules:
 - id: kubemanifest
   usage: The k8s deployer
