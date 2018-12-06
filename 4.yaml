@@ -151,7 +151,7 @@ stages:
    config:
      job: "{{service}}-tests/job/sandbox"
      master: jenkins
-     name: Automated Tests
+     name: Sandbox Smoke Test
      notifications:
       - address: "bexspay-team"
         level: "stage"
