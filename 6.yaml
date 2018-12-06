@@ -120,7 +120,6 @@ stages:
    when:
     - "{{stageIngress == true}}"
  - id: Automated Tests
-   refId: 10
    dependsOn:
     - Config Dev Ingress
    continuePipeline: false
@@ -140,7 +139,6 @@ stages:
         - "stage.failed"
      sendNotifications: true
  - id: Deploy to Sandbox
-   refId: 3
    type: deployManifest
    dependsOn:
     - Automated Tests
@@ -149,7 +147,6 @@ stages:
    config: |
       {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap %}
  - id: Deploy to Prod
-   refId: 3
    type: deployManifest
    dependsOn:
     - Deploy to Sandbox
