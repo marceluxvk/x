@@ -201,3 +201,5 @@ modules:
    - name: seccert
   definition:
     name: "{{secname}}"
+    secret:
+        secretName: "{{seccert}}"
