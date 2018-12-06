@@ -118,10 +118,20 @@ stages:
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap %}
+ - id: Configuring Sandbox Ingress
+   type: deployManifest
+   stageTimeoutMs: 60000
+   dependsOn:
+    - Deploy to Stage
+   manifestArtifactAccount: embedded-artifactports
+   config: |
+     {% module ingress name=service ns=application ingress=config.sandbox.ingress target="sandbox" %}
+   when:
+    - "{{config.stage.ingress != null}}"
  - id: Deploy to Prod
    type: deployManifest
    dependsOn:
-    - Deploy to Sandbox
+    - Configuring Sandbox Ingress
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
