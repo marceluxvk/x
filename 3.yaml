@@ -101,7 +101,7 @@ stages:
     moniker:  
       app: "{{application}}"
     manifests: |
-     {% module ingress service=service ingress=config.stage.ingress %}
+     {% module ingress name=service ingress=config.stage.ingress ns=application target=target %}
    when:
     - "{{config.stage.ingress != null}}"
  - id: Automated Tests
@@ -247,21 +247,23 @@ modules:
       name: "{{mapname}}"
 - id: ingress
   variable:
-    - name: service
+    - name: name
     - name: ingress
       type: object
+    - name: ns
+    - name: target
   definition:
     apiVersion: extensions/v1beta1
     kind: Ingress
     metadata:  
       annotations:
         kubernetes.io/ingress.class: istio
-      name: "{{service}}-ingress"
-      namespace: "{{application}}-stage"
+      name: "{{name}}-ingress"
+      namespace: "{{ns}}-{{target}}"
     spec:
       rules: |
         {% for item in ingress.paths %}
-        - {% module ingressItem inghost=ingress.fqdn name=service %}
+        - {% module ingressItem inghost=ingress.fqdn name=name %}
         {% endfor %}
 - id: ingressItem
   variables:
