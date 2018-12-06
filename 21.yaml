@@ -28,6 +28,7 @@ variables:
        - name: datastore
          mount: "/secret"
          secretName: datastore-cert
+     ingress:
     sandbox:
      configmap:
        - name: env-config-v001
@@ -35,6 +36,11 @@ variables:
        - name: datastore
          mount: "/secret"
          secretName: datastore-cert
+     ingress:
+       fqdn: sandbox.bexs.com.br
+       paths:
+         - path: /v1/consumers.*
+         - port: 8081
     prod:
      configmap:
        - name: env-config-v001
@@ -42,6 +48,11 @@ variables:
        - name: datastore
          mount: "/secret"
          secretName: datastore-cert
+     ingress:
+       fqdn: internals.bexs.com.br
+       paths:
+         - path: /v1/consumers.*
+         - port: 8081
 - name: stage
   description: deploy on stage
   type: boolean
@@ -215,3 +226,27 @@ modules:
   definition:
     configMapRef:
       name: "{{mapname}}"
+- id: ingress
+  variables:
+   - name:
+  definition:
+    - apiVersion: extensions/v1beta1
+      kind: Ingress
+      metadata:
+        annotations:
+          kubernetes.io/ingress.class: istio
+        name: ingress-payments
+        namespace: "{{ns}}"
+      spec:
+        rules:
+          - host: "{{inghost}}"
+            http:
+              paths:
+                - backend:
+                    serviceName: "{{service}}-service"
+                    servicePort: 8080
+                  path: /v1/payments.*
+                - backend:
+                    serviceName: payment-service
+                    servicePort: 8080
+                  path: /v1/callback.*

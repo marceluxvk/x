@@ -21,6 +21,13 @@ variables:
        name: "http"
      - port: 6568
        name: "grpc"
+    ingress:
+     stage:
+     sandbox:
+     prod:
+      - port: 8081
+        path: /v1/consumer.*
+        host: internals.bexs.com.br
     stage:
      configmap:
        - name: env-config-v001
