@@ -92,21 +92,21 @@ stages:
     account: spinnaker-service-account
     cloudProvider: kubernetes
     notifications:
-    - address: "  bexspay-team"
-      level: "st  age"
-      type: "sla  ck"
+    - address: "bexspay-team"
+      level: "stage"
+      type: "slack"
       when:   
-      - "stage.f  ailed"
-    sendNotifica  tions: true
+      - "stage.failed"
+    sendNotifications: true
     moniker:  
-      app: "{{ap  plication}}"
+      app: "{{application}}"
     manifests:  
-     - apiVersio  n: extensions/v1beta1
-       kind: Ing  ress
+     - apiVersion: extensions/v1beta1
+       kind: Ingress
        metadata:  
-         annotat  ions:
-           kuber  netes.io/ingress.class: istio
-         name: "  {{service}}-ingress"
+         annotations:
+           kubernetes.io/ingress.class: istio
+         name: "{{service}}-ingress"
          namespace: "{{application}}-stage"
        spec:
          rules: |
