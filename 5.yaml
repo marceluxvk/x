@@ -13,13 +13,13 @@ variables:
   description: the service name without sufix
   type: string
 - name: config
-  description: description of the service port
-  type: object
-  defaultValue:
-    ports:
-     - port: 8081
-       name: "http"
-     - port: 6568
+  description: description of thvk/x/master/4.yamle service port
+  type: objectvk/x/master/4.yaml
+  defaultValue:vk/x/master/4.yaml
+    ports:vk/x/master/4.yaml
+     - port: 8081vk/x/master/4.yaml
+       name: "http"vk/x/master/4.yaml
+     - port: 6568vk/x/master/4.yaml
        name: "grpc"
     stage:
      configmap:
@@ -170,6 +170,8 @@ stages:
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap %}
+   when:
+    - "{{production_deploy == true}}"
  - id: Config Prod Ingress
    type: deployManifest
    stageTimeoutMs: 60000
@@ -180,6 +182,27 @@ stages:
      {% module ingress name=service ns=application ingress=config.prod.ingress target="prod" %}
    when:
     - "{{config.prod.ingress != null}}"
+ - id: Prod Smoke Test
+   dependsOn:
+    - Config Prod Ingress
+   continuePipeline: false
+   stageTimeoutMs: 60000
+   type: jenkins
+   failPipeline: true
+   config:
+     job: "{{service}}-tests/job/prod"
+     master: jenkins
+     name: Prod Smoke Test
+     notifications:
+      - address: "bexspay-team"
+        level: "stage"
+        type: "slack"
+        when: 
+        - "stage.complete"
+        - "stage.failed"
+     sendNotifications: true
+   when:
+    - "{{ production_test == true && production_deploy == true }}"
 modules:
 - id: kubemanifest
   usage: The k8s deployer
