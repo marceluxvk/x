@@ -81,7 +81,7 @@ stages:
    manifestArtifactAccount: embedded-artifactports
    config: |
       {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
- - id: Config Dev Ingress
+ - id: Configuring Stage Ingress
    type: deployManifest
    stageTimeoutMs: 60000
    dependsOn:
@@ -91,7 +91,7 @@ stages:
      {% module ingress name=service ns=application ingress=config.stage.ingress target="stage" %}
    when:
     - "{{config.stage.ingress != null}}"
- - id: Automated Tests
+ - id: Stage Tests
    dependsOn:
     - Configuring Stage Ingress
    continuePipeline: false
@@ -113,12 +113,12 @@ stages:
  - id: Deploy to Sandbox
    type: deployManifest
    dependsOn:
-    - Automated Tests
+    - Stage Tests
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap %}
- - id: Configure Sandbox Ingress
+ - id: Configuring Sandbox Ingress
    type: deployManifest
    stageTimeoutMs: 60000
    dependsOn:
@@ -131,7 +131,7 @@ stages:
  - id: Deploy to Prod
    type: deployManifest
    dependsOn:
-    - Deploy to Sandbox
+    - Configuring Sandbox Ingress
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
