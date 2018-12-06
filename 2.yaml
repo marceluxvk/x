@@ -101,7 +101,7 @@ stages:
    config:
      job: "{{service}}-tests/job/develop"
      master: jenkins
-     name: Automated Tests
+     name: Stage Tests
      notifications:
       - address: "bexspay-team"
         level: "stage"
