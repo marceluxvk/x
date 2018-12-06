@@ -1,8 +1,8 @@
 id: Template2
 schema: "1"
 metadata:
-  name: Template2
-  description: Modules example template
+  name: Dynamic template
+  description: This template supports enable/disable steps with ingress, smoke test, and deployments from stage to prod.
   owner: marcelo.lima@bexsbanco.com.br
   scopes: [global]
 protected: false
