@@ -205,7 +205,7 @@ modules:
         annotations:
           kubernetes.io/ingress.class: istio
         name: "{{name}}-ingress"
-        namespace: "{{ns}}"
+        namespace: "{{ns}}-{{target}}"
       spec:
         rules: |
           {% for ing in inghost %}
