@@ -28,7 +28,6 @@ variables:
        - name: datastore
          mount: "/secret"
          secretName: datastore-cert
-     ingress:
     sandbox:
      configmap:
        - name: env-config-v001
@@ -252,7 +251,3 @@ modules:
             serviceName: "{{name}}-service"
             servicePort: 8080
           path: /v1/payments.*
-        - backend:
-            serviceName: payment-service
-            servicePort: 8080
-          path: /v1/callback.*
