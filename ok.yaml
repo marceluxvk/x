@@ -13,7 +13,7 @@ variables:
   description: the service name without sufix
   type: string
 - name: config
-  description: description of the service port
+  description: deplo service to address
   type: object
   defaultValue:
     ports:
@@ -141,14 +141,37 @@ stages:
      {% module ingress name=service ns=application ingress=config.sandbox.ingress target="sandbox" %}
    when:
     - "{{config.sandbox.ingress != null && sandbox_deploy == true}}"
+ - id: Sandbox Smoke Test
+   dependsOn:
+    - Configuring Sandbox Ingress
+   continuePipeline: false
+   stageTimeoutMs: 60000
+   type: jenkins
+   failPipeline: true
+   config:
+     job: "{{service}}-tests/job/sandbox"
+     master: jenkins
+     name: Sandbox Smoke Test
+     notifications:
+      - address: "bexspay-team"
+        level: "stage"
+        type: "slack"
+        when: 
+        - "stage.complete"
+        - "stage.failed"
+     sendNotifications: true
+   when:
+    - "{{ sandbox_test == true && sandbox_deploy == true }}"
  - id: Deploy to Prod
    type: deployManifest
    dependsOn:
-    - Configuring Sandbox Ingress
+    - Sandbox Smoke Test
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap %}
+   when:
+    - "{{production_deploy == true}}"
  - id: Config Prod Ingress
    type: deployManifest
    stageTimeoutMs: 60000
@@ -158,7 +181,28 @@ stages:
    config: |
      {% module ingress name=service ns=application ingress=config.prod.ingress target="prod" %}
    when:
-    - "{{config.prod.ingress != null}}"
+    - "{{config.prod.ingress != null && production_deploy == true}}"
+ - id: Prod Smoke Test
+   dependsOn:
+    - Config Prod Ingress
+   continuePipeline: false
+   stageTimeoutMs: 60000
+   type: jenkins
+   failPipeline: true
+   config:
+     job: "{{service}}-tests/job/prod"
+     master: jenkins
+     name: Prod Smoke Test
+     notifications:
+      - address: "bexspay-team"
+        level: "stage"
+        type: "slack"
+        when: 
+        - "stage.complete"
+        - "stage.failed"
+     sendNotifications: true
+   when:
+    - "{{ production_test == true && production_deploy == true }}"
 modules:
 - id: kubemanifest
   usage: The k8s deployer
