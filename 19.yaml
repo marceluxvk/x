@@ -70,7 +70,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifactports
    config: |
-      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret %}
+      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
  - id: Automated Tests
    refId: 2
    dependsOn:
@@ -99,7 +99,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret %}
+      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap %}
  - id: Deploy to Prod
    refId: 3
    type: deployManifest
@@ -108,7 +108,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret %}
+      {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
@@ -119,6 +119,8 @@ modules:
    - name: config
      type: object
    - name: secrets
+     type: object
+   - name: maps
      type: object
   definition:
     manifestSource: text
@@ -175,9 +177,10 @@ modules:
                   {% for secret in secrets %}
                   - {% module mountVolume secname=secret.name secmount=secret.mount %}
                   {% endfor %}
-                envFrom:
-                  - configMapRef:
-                      name: "env-config-v001"
+                envFrom: |
+                  {% for map in maps %}
+                  - {% module configMap name=map.name %}
+                  {% endfor %}
             restartPolicy: "Always"
             volumes: |
               {% for secret in secrets %}
@@ -206,3 +209,9 @@ modules:
     name: "{{secname}}"
     secret:
         secretName: "{{seccert}}"
+- id: configMap
+  variables:
+   - name: name
+  definition:
+    configMapRef:
+      name: "{{name}}"
