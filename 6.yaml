@@ -177,7 +177,7 @@ modules:
       - "stage.failed"
     sendNotifications: true
     moniker:
-      app: "{{application}}"
+      app: "{{ns}}"
     manifests:
     - apiVersion: v1
       kind: Service
