@@ -1,8 +1,8 @@
 id: Template2
 schema: "1"
 metadata:
-  name: Template2
-  description: Modules example template
+  name: Dynamic template
+  description: This template supports enable/disable steps with ingress, smoke test, and deployments from stage to prod.
   owner: marcelo.lima@bexsbanco.com.br
   scopes: [global]
 protected: false
@@ -83,6 +83,14 @@ configuration:
     master: jenkins
     propertyFile: "spinnaker.properties"
     type: jenkins
+ notifications:
+  - address: "bexspay-team"
+    level: "pipeline"
+    type: "slack"
+    when: 
+     - "pipeline.starting"
+     - "pipeline.complete"
+     - "pipeline.failed"
 stages:
  - id: Deploy to Stage
    type: deployManifest
