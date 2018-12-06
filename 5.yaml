@@ -81,7 +81,6 @@ stages:
    manifestArtifactAccount: embedded-artifactports
    config: |
       {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
- 
  - id: Automated Tests
    dependsOn:
     - Deploy to Stage
@@ -98,13 +97,13 @@ stages:
         level: "stage"
         type: "slack"
         when: 
-        - "singressge.complete"
-        - "singressge.failed"
-     sendNotingressications: true
- - id: Deploingressto Sandbox
+        - "stage.complete"
+        - "stage.failed"
+     sendNotifications: true
+ - id: Deploy to Sandbox
    type: depingressyManifest
-   dependsOningress
-    - Automaingressd Tests
+   deployManifest:
+    - Automated Tests
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
