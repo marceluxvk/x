@@ -199,6 +199,18 @@ modules:
               {% for secret in secrets %}
               - {% module secretMapping secname=secret.name seccert=secret.secretName %}
               {% endfor %}
+    - apiVersion: extensions/v1beta1
+      kind: Ingress
+      metadata:
+        annotations:
+          kubernetes.io/ingress.class: istio
+        name: "{{service}}-ingress"
+        namespace: "{{ns}}"
+      spec:
+        rules: |
+          {% for ing in inghost %}
+          - {% module ingress inghost=ing.fqdn %}
+          {% endfor %}
 - id: portMapping
   variables:
    - name: svcport
@@ -233,23 +245,14 @@ modules:
    - name: inghost
    - name: ns
   definition:
-    apiVersion: extensions/v1beta1
-    kind: Ingress
-    metadata:
-      annotations:
-        kubernetes.io/ingress.class: istio
-      name: ingress-payments
-      namespace: "{{ns}}"
-    spec:
-      rules:
-        - host: "{{inghost}}"
-          http:
-            paths:
-              - backend:
-                  serviceName: "{{service}}-service"
-                  servicePort: 8080
-                path: /v1/payments.*
-              - backend:
-                  serviceName: payment-service
-                  servicePort: 8080
-                path: /v1/callback.*
+    host: "{{inghost}}"
+    http:
+      paths:
+        - backend:
+            serviceName: "{{service}}-service"
+            servicePort: 8080
+          path: /v1/payments.*
+        - backend:
+            serviceName: payment-service
+            servicePort: 8080
+          path: /v1/callback.*
