@@ -193,7 +193,7 @@ modules:
 - id: mountVolume
   variables:
    - name: name
-   - path: path
+   - name: path
   definition:
     name: "{{name}}"
     mountPath: "{{path}}"
