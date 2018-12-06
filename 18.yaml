@@ -179,7 +179,7 @@ modules:
                   - configMapRef:
                       name: "env-config-v001"
             restartPolicy: "Always"
-            volumes:
+            volumes: |
               {% for secret in secrets %}
               - {% module secretMapping secname=secret.name seccert=secret.secretName %}
               {% endfor %}
