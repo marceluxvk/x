@@ -56,13 +56,22 @@ variables:
   description: Enable the execution of functional tests on stage
   type: boolean
   defaultValue: true
-- name: sandbox
+- name: sandbox_deploy
   description: deploy on sandbox
   type: boolean
-  defaultValue: false
-- name: production
+  defaultValue: true
+- name: sandbox_test
+  description: execute the test in sandbox
+  type: boolean
+  defaultValue: true
+- name: production_deploy
   defaultValue: false
   description: deploy to production
+  type: boolean
+  defaultValue: true
+- name: production_test
+  defaultValue: false
+  description: execute tests in production env
   type: boolean
   defaultValue: false
 configuration:
@@ -120,6 +129,8 @@ stages:
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap %}
+   when:
+    - "{{sandbox_deploy == true}}"
  - id: Configuring Sandbox Ingress
    type: deployManifest
    stageTimeoutMs: 60000
