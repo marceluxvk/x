@@ -38,7 +38,7 @@ variables:
      ingress:
        fqdn: sandbox.bexs.com.br
        paths:
-         - path: /v1/consumers.*
+         - path: /v1/consumer.*
            port: 8081
     prod:
      configmap:
@@ -50,7 +50,7 @@ variables:
      ingress:
        fqdn: internals.bexs.com.br
        paths:
-         - path: /v1/consumers.*
+         - path: /v1/consumer.*
            port: 8081
 - name: stage
   description: deploy on stage
