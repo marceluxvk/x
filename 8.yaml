@@ -39,7 +39,7 @@ variables:
        fqdn: sandbox.bexs.com.br
        paths:
          - path: /v1/consumers.*
-         - port: 8081
+           port: 8081
     prod:
      configmap:
        - name: env-config-v001
@@ -51,13 +51,9 @@ variables:
        fqdn: internals.bexs.com.br
        paths:
          - path: /v1/consumers.*
-         - port: 8081
+           port: 8081
 - name: stage
   description: deploy on stage
-  type: boolean
-  defaultValue: true
-- name: stageIngress
-  description: enable ingress to stage
   type: boolean
   defaultValue: true
 - name: sandbox
@@ -96,21 +92,21 @@ stages:
     account: spinnaker-service-account
     cloudProvider: kubernetes
     notifications:
-    - address: "bexspay-team"
-      level: "stage"
-      type: "slack"
-      when: 
-      - "stage.failed"
-    sendNotifications: true
-    moniker:
-      app: "{{application}}"
-    manifests:
-     - apiVersion: extensions/v1beta1
-       kind: Ingress
-       metadata:
-         annotations:
-           kubernetes.io/ingress.class: istio
-         name: "{{service}}-ingress"
+    - address: "  bexspay-team"
+      level: "st  age"
+      type: "sla  ck"
+      when:   
+      - "stage.f  ailed"
+    sendNotifica  tions: true
+    moniker:  
+      app: "{{ap  plication}}"
+    manifests:  
+     - apiVersio  n: extensions/v1beta1
+       kind: Ing  ress
+       metadata:  
+         annotat  ions:
+           kuber  netes.io/ingress.class: istio
+         name: "  {{service}}-ingress"
          namespace: "{{application}}-stage"
        spec:
          rules: |
