@@ -248,7 +248,7 @@ modules:
       
 - id: ingress
   variable:
-    - name: name
+    - name: service
     - name: ingress
       type: object
     - name: ns
@@ -259,12 +259,12 @@ modules:
     metadata:  
       annotations:
         kubernetes.io/ingress.class: istio
-      name: "{{name}}-ingress"
+      name: "{{service}}-ingress"
       namespace: "{{ns}}-{{target}}"
     spec:
       rules: |
         {% for item in ingress.paths %}
-        - {% module ingressItem inghost=ingress.fqdn name=name %}
+        - {% module ingressItem inghost=ingress.fqdn name=service %}
         {% endfor %}
 - id: ingressItem
   variables:
