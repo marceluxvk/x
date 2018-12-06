@@ -80,7 +80,24 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifactports
    config: |
-      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap ingress=config.stage.ingress %}
+      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
+ - id: Config Dev Ingress
+   type: deployManifest
+   stageTimeoutMs: 60000
+   manifestArtifactAccount: embedded-artifactports
+   config: 
+    - apiVersion: extensions/v1beta1
+      kind: Ingress
+      metadata:
+        annotations:
+          kubernetes.io/ingress.class: istio
+        name: "{{name}}-ingress"
+        namespace: "{{application}}-stage"
+      spec:
+        rules: |
+          {% for item in config.stage.ingress.paths %}
+          - {% module ingress inghost=ingress.fqdn name=service %}
+          {% endfor %}
  - id: Automated Tests
    refId: 2
    dependsOn:
@@ -109,7 +126,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap ingress=config.sandbox.ingress %}
+      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap %}
  - id: Deploy to Prod
    refId: 3
    type: deployManifest
@@ -118,7 +135,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap ingress=config.prod.ingress %}
+      {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
@@ -131,8 +148,6 @@ modules:
    - name: secrets
      type: object
    - name: maps
-     type: object
-   - name: ingress
      type: object
   definition:
     manifestSource: text
@@ -198,18 +213,6 @@ modules:
               {% for secret in secrets %}
               - {% module secretMapping secname=secret.name seccert=secret.secretName %}
               {% endfor %}
-    - apiVersion: extensions/v1beta1
-      kind: Ingress
-      metadata:
-        annotations:
-          kubernetes.io/ingress.class: istio
-        name: "{{name}}-ingress"
-        namespace: "{{ns}}-{{target}}"
-      spec:
-        rules: |
-          {% for item in ingress.paths %}
-          - {% module ingress inghost=ingress.fqdn name=name %}
-          {% endfor %}
 - id: portMapping
   variables:
    - name: svcport
