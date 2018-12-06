@@ -80,7 +80,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifactports
    config: |
-      {% module kubemanifest service=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
+      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
  - id: Config Dev Ingress
    type: deployManifest
    stageTimeoutMs: 60000
