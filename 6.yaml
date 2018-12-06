@@ -13,13 +13,13 @@ variables:
   description: the service name without sufix
   type: string
 - name: config
-  description: description of thvk/x/master/4.yamle service port
-  type: objectvk/x/master/4.yaml
-  defaultValue:vk/x/master/4.yaml
-    ports:vk/x/master/4.yaml
-     - port: 8081vk/x/master/4.yaml
-       name: "http"vk/x/master/4.yaml
-     - port: 6568vk/x/master/4.yaml
+  description: deplo service to address
+  type: object
+  defaultValue:
+    ports:
+     - port: 8081
+       name: "http"
+     - port: 6568
        name: "grpc"
     stage:
      configmap:
