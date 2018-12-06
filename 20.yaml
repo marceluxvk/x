@@ -179,7 +179,7 @@ modules:
                   {% endfor %}
                 envFrom: |
                   {% for map in maps %}
-                  - {% module configMap name=map.name %}
+                  - {% module configMap mapname=map.name %}
                   {% endfor %}
             restartPolicy: "Always"
             volumes: |
@@ -211,7 +211,7 @@ modules:
         secretName: "{{seccert}}"
 - id: configMap
   variables:
-   - name: name
+   - name: mapname
   definition:
     configMapRef:
-      name: "{{name}}"
+      name: "{{mapname}}"
