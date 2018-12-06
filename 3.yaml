@@ -21,23 +21,24 @@ variables:
        name: "http"
      - port: 6568
        name: "grpc"
-    configmap:
-     - stage:
+    stage:
+     configmap:
        - name: env-config-v001
-     - sandbox:
-       - name: env-config-v001
-     - prod:
-       - name: env-config-v001
-    secret:
-     - stage:
+     secret:
        - name: datastore
          mount: "/secret"
          secretName: datastore-cert
-     - sandbox:
+    sandbox:
+     configmap:
+       - name: env-config-v001
+     secret:
        - name: datastore
          mount: "/secret"
          secretName: datastore-cert
-     - prod:
+    prod:
+     configmap:
+       - name: env-config-v001
+     secret:
        - name: datastore
          mount: "/secret"
          secretName: datastore-cert
@@ -46,7 +47,7 @@ variables:
   type: boolean
   defaultValue: true
 - name: sandbox
-  description: deploy on sandbox6565
+  description: deploy on sandbox
   type: boolean
   defaultValue: false
 - name: production
@@ -69,7 +70,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifactports
    config: |
-      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.secret.stage %}
+      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret %}
  - id: Automated Tests
    refId: 2
    dependsOn:
@@ -98,7 +99,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.secret.sandbox %}
+      {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret %}
  - id: Deploy to Prod
    refId: 3
    type: deployManifest
@@ -107,7 +108,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
-      {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.secret.prod %}
+      {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret %}
 modules:
 - id: kubemanifest
   usage: The k8s deployer
