@@ -79,7 +79,6 @@ stages:
    config: |
       {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
  - id: Automated Tests
-   refId: 2
    dependsOn:
     - Deploy to Stage
    continuePipeline: false
@@ -99,7 +98,6 @@ stages:
         - "stage.failed"
      sendNotifications: true
  - id: Deploy to Sandbox
-   refId: 3
    type: deployManifest
    dependsOn:
     - Automated Tests
@@ -108,7 +106,6 @@ stages:
    config: |
       {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap %}
  - id: Deploy to Prod
-   refId: 3
    type: deployManifest
    dependsOn:
     - Deploy to Sandbox
