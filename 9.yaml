@@ -52,8 +52,8 @@ variables:
        paths:
          - path: /v1/consumer.*
            port: 8081
-- name: stage
-  description: deploy on stage
+- name: functional_tests
+  description: Enable the execution of functional tests on stage
   type: boolean
   defaultValue: true
 - name: sandbox
@@ -110,6 +110,8 @@ stages:
         - "stage.complete"
         - "stage.failed"
      sendNotifications: true
+   when:
+    - "{{ functional_tests == true }}"
  - id: Deploy to Sandbox
    type: deployManifest
    dependsOn:
