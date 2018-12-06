@@ -93,7 +93,7 @@ stages:
     - "{{config.stage.ingress != null}}"
  - id: Automated Tests
    dependsOn:
-    - Config Dev Ingress
+    - Configuring Stage Ingress
    continuePipeline: false
    stageTimeoutMs: 60000
    type: jenkins
@@ -118,6 +118,16 @@ stages:
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="sandbox" ns=application config=config secrets=config.sandbox.secret maps=config.sandbox.configmap %}
+ - id: Configure Sandbox Ingress
+   type: deployManifest
+   stageTimeoutMs: 60000
+   dependsOn:
+    - Deploy to Sandbox
+   manifestArtifactAccount: embedded-artifactports
+   config: |
+     {% module ingress name=service ns=application ingress=config.sandbox.ingress target="sandbox" %}
+   when:
+    - "{{config.sandbox.ingress != null}}"
  - id: Deploy to Prod
    type: deployManifest
    dependsOn:
@@ -126,6 +136,16 @@ stages:
    manifestArtifactAccount: embedded-artifact
    config: |
       {% module kubemanifest name=service target="prod" ns=application config=config secrets=config.prod.secret maps=config.prod.configmap %}
+ - id: Configure Production Ingress
+   type: deployManifest
+   stageTimeoutMs: 60000
+   dependsOn:
+    - Deploy to Prod
+   manifestArtifactAccount: embedded-artifactports
+   config: |
+     {% module ingress name=service ns=application ingress=config.prod.ingress target="prod" %}
+   when:
+    - "{{config.stage.ingress != null}}"
 modules:
 - id: kubemanifest
   usage: The k8s deployer
@@ -184,12 +204,12 @@ modules:
         template:
           metadata:
             labels:
-              app: "{{name}}"
-          spec:
-            containers:
-              - image: "${ trigger[\"properties\"][\"ci.image\"] }"
-                imagePullPolicy: IfNotPresent
-                name: "{{name}}"
+              app: "sandbox{{name}}"
+          spec:sandbox
+            containesandboxrs:
+              - imagsandboxe: "${ trigger[\"properties\"][\"ci.image\"] }"
+                imagsandboxePullPolicy: IfNotPresent
+                namesandbox: "{{name}}"
                 volumeMounts: |
                   {% for secret in secrets %}
                   - {% module mountVolume secname=secret.name secmount=secret.mount %}
@@ -223,10 +243,10 @@ modules:
    - name: secname
    - name: seccert
   definition:
-    name: "{{secname}}"
+    name: "{{sesandbox}}"
     secret:
-        secretName: "{{seccert}}"
-- id: configMap
+        secretNsandbox"{{seccert}}"
+- id: configMapsandbox
   variables:
    - name: mapname
   definition:
