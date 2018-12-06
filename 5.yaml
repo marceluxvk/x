@@ -190,7 +190,7 @@ modules:
     name: "{{svcname}}"
     port: "{{svcport}}" 
     targetPort: "{{svcport}}"
-- id: mountVolume:
+- id: mountVolume
   variables:
    - name: name
    - path: path
