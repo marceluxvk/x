@@ -141,10 +141,31 @@ stages:
      {% module ingress name=service ns=application ingress=config.sandbox.ingress target="sandbox" %}
    when:
     - "{{config.sandbox.ingress != null && sandbox_deploy == true}}"
+ - id: Sandbox Smoke Test
+   dependsOn:
+    - Configuring Sandbox Ingress
+   continuePipeline: false
+   stageTimeoutMs: 60000
+   type: jenkins
+   failPipeline: true
+   config:
+     job: "{{service}}-tests/job/sandbox"
+     master: jenkins
+     name: Automated Tests
+     notifications:
+      - address: "bexspay-team"
+        level: "stage"
+        type: "slack"
+        when: 
+        - "stage.complete"
+        - "stage.failed"
+     sendNotifications: true
+   when:
+    - "{{ sandbox_test == true && sandbox_deploy == true }}"
  - id: Deploy to Prod
    type: deployManifest
    dependsOn:
-    - Configuring Sandbox Ingress
+    - Sandbox Smoke Test
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
