@@ -56,6 +56,10 @@ variables:
   description: deploy on stage
   type: boolean
   defaultValue: true
+- name: stageIngress
+  description: enable ingress to stage
+  type: boolean
+  defaultValue: true
 - name: sandbox
   description: deploy on sandbox
   type: boolean
@@ -113,6 +117,8 @@ stages:
            {% for item in config.stage.ingress.paths %}
            - {% module ingress inghost=config.stage.ingress.fqdn name=service %}
            {% endfor %}
+   when:
+    - "{{stageIngress == true}}"
  - id: Automated Tests
    refId: 10
    dependsOn:
