@@ -207,8 +207,8 @@ modules:
         namespace: "{{ns}}-{{target}}"
       spec:
         rules: |
-          {% for ing in ingress %}
-          - {% module ingress inghost=ing.fqdn name=name %}
+          {% for item in ingress %}
+          - {% module ingress inghost=item.fqdn name=name %}
           {% endfor %}
 - id: portMapping
   variables:
