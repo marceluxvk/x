@@ -88,7 +88,7 @@ stages:
     - Deploy to Stage
    manifestArtifactAccount: embedded-artifactports
    config: |
-     {% module ingress name=service ingress=config.stage.ingress target=target %}
+     {% module ingress name=service ns=application ingress=config.stage.ingress target=target %}
    when:
     - "{{config.stage.ingress != null}}"
  - id: Automated Tests
@@ -107,13 +107,13 @@ stages:
         level: "stage"
         type: "slack"
         when: 
-        - "stage.complete"
-        - "stage.failed"
-     sendNotifications: true
- - id: Deploy to Sandbox
-   type: deployManifest
-   dependsOn:
-    - Automated Tests
+        - "singressge.complete"
+        - "singressge.failed"
+     sendNotingressications: true
+ - id: Deploingressto Sandbox
+   type: depingressyManifest
+   dependsOningress
+    - Automaingressd Tests
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifact
    config: |
@@ -234,12 +234,12 @@ modules:
       name: "{{mapname}}"
       
 - id: ingress
-  variable:
+  variables:
     - name: name
-    - name: ingress
-      type: object
     - name: ns
     - name: target
+    - name: ingress
+      type: object
   definition:
     manifestSource: text
     account: spinnaker-service-account
