@@ -230,23 +230,23 @@ modules:
   variables:
    - name:
   definition:
-    - apiVersion: extensions/v1beta1
-      kind: Ingress
-      metadata:
-        annotations:
-          kubernetes.io/ingress.class: istio
-        name: ingress-payments
-        namespace: "{{ns}}"
-      spec:
-        rules:
-          - host: "{{inghost}}"
-            http:
-              paths:
-                - backend:
-                    serviceName: "{{service}}-service"
-                    servicePort: 8080
-                  path: /v1/payments.*
-                - backend:
-                    serviceName: payment-service
-                    servicePort: 8080
-                  path: /v1/callback.*
+    apiVersion: extensions/v1beta1
+    kind: Ingress
+    metadata:
+      annotations:
+        kubernetes.io/ingress.class: istio
+      name: ingress-payments
+      namespace: "{{ns}}"
+    spec:
+      rules:
+        - host: "{{inghost}}"
+          http:
+            paths:
+              - backend:
+                  serviceName: "{{service}}-service"
+                  servicePort: 8080
+                path: /v1/payments.*
+              - backend:
+                  serviceName: payment-service
+                  servicePort: 8080
+                path: /v1/callback.*
