@@ -287,8 +287,8 @@ modules:
                   {% endfor %}
             restartPolicy: "Always"
             volumes: |
-              {% if secrets != null %}
-              {% for secret in secrets && secrets.size() > 0 %}
+              {% if secrets != null && secrets.size() > 0 %}
+              {% for secret in secrets %}
               - {% module secretMapping secname=secret.name seccert=secret.secretName %}
               {% endfor %}
               {% endif %}
