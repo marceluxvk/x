@@ -276,7 +276,7 @@ modules:
                 imagePullPolicy: IfNotPresent
                 name: "{{name}}"
                 volumeMounts: |
-                  {% if secrets != null && secrets.size() > 0 %}
+                  {% if secrets != null && secrets != "" %}
                   {% for secret in secrets %}
                   - {% module mountVolume secname=secret.name secmount=secret.mount %}
                   {% endfor %}
@@ -287,7 +287,7 @@ modules:
                   {% endfor %}
             restartPolicy: "Always"
             volumes: |
-              {% if secrets != null && secrets.size() > 0 %}
+              {% if secrets != null && secrets != "" %}
               {% for secret in secrets %}
               - {% module secretMapping secname=secret.name seccert=secret.secretName %}
               {% endfor %}
