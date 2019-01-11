@@ -305,7 +305,7 @@ modules:
                   - name: "config"
                     mountPath: "/app/config"
                 envFrom: |
-                  {% for map in maps %}
+                  {% for map in maps.env %}
                   - {% module configMap mapname=map.name %}
                   {% endfor %}
                 livenessProbe: "{{liveness}}"
@@ -316,6 +316,9 @@ modules:
                 secret:
                   secretName: "{{secret.name}}"
                   items: "{{secret.items}}"
+                configMap:
+                  name: "{{maps.file.name}}"
+                  items: "{{maps.file.items}}"
 - id: portMapping
   variables:
    - name: svcport
