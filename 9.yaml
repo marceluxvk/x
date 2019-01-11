@@ -303,7 +303,7 @@ modules:
                 name: "{{name}}"
                 volumeMounts: |
                   {% for secret in secrets %}
-                  - {% module mountVolume secname=secret.name secmount=secret.mount secpath=secret.path %}
+                  - {% module mountVolume secname=secret.name secmount=secret.mount %}
                   {% endfor %}
                 envFrom: |
                   {% for map in maps %}
@@ -314,7 +314,7 @@ modules:
             restartPolicy: "Always"
             volumes: |
               {% for secret in secrets %}
-              - {% module secretMapping secname=secret.name seccert=secret.secretName %}
+              - {% module secretMapping secname=secret.name seccert=secret.secretName secitems=secret.items %}
               {% endfor %}
 - id: portMapping
   variables:
@@ -328,19 +328,19 @@ modules:
   variables:
    - name: secname
    - name: secmount
-   - name: secpath
   definition:
     name: "{{secname}}"
     mountPath: "{{secmount}}"
-    subPath: "{{secpath}}"
 - id: secretMapping
   variables:
    - name: secname
    - name: seccert
+   - name: secitems
   definition:
     name: "{{secname}}"
     secret:
         secretName: "{{seccert}}"
+        items: "{{secitems}}"
 - id: configMap
   variables:
    - name: mapname
