@@ -301,9 +301,9 @@ modules:
               - image: "${ trigger[\"properties\"][\"ci.image\"] }"
                 imagePullPolicy: IfNotPresent
                 name: "{{name}}"
-                volumeMounts: 
-                  name: "config"
-                  mountPath: "/app/config"
+                volumeMounts:
+                  - name: "config"
+                    mountPath: "/app/config"
                 envFrom: |
                   {% for map in maps %}
                   - {% module configMap mapname=map.name %}
