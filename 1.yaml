@@ -304,6 +304,8 @@ modules:
                 volumeMounts:
                   - name: "config"
                     mountPath: "/app/config"
+                  - name: "secrets"
+                    mountPath: "/app/secrets"
                 envFrom: |
                   {% for map in maps.env %}
                   - {% module configMap mapname=map.name %}
@@ -312,10 +314,11 @@ modules:
                 readinessProbe: "{{readiness}}"
             restartPolicy: "Always"
             volumes: 
-              - name: "config"
+              - name: "secrets"
                 secret:
                   secretName: "{{secret.name}}"
                   items: "{{secret.items}}"
+              - name: "config"
                 configMap:
                   name: "{{maps.file.name}}"
                   items: "{{maps.file.items}}"
