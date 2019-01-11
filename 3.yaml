@@ -314,8 +314,7 @@ modules:
             volumes: 
               - name: "config"
                 secrets:
-                  name: "{{secret.name}}"
-                  path: "/app/config"
+                  secretName: "{{secret.name}}"
                   items: "{{secret.items}}"
 - id: portMapping
   variables:
