@@ -314,7 +314,6 @@ modules:
             volumes: 
               - name: "config"
                 secret:
-                  defaultMode: 644
                   secretName: "{{secret.name}}"
                   items: "{{secret.items}}"
 - id: portMapping
