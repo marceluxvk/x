@@ -52,28 +52,6 @@ variables:
        paths:
          - path: /v1/consumer.*
            port: 8081
-- name: liveness
-  description: the method for check if container is live
-  defaultValue: |
-    httpGet:
-      path: /healthz
-      port: 8080
-    initialDelaySeconds: 30
-    periodSeconds: 30      
-    successThreshold: 1
-    failureThreshold: 1
-    timeoutSeconds: 3
-- name: readiness
-  description: the method for check if container is read
-  defaultValue: |
-    httpGet:
-      path: /healthz
-      port: 8080
-    initialDelaySeconds: 30
-    periodSeconds: 30      
-    successThreshold: 1
-    failureThreshold: 1
-    timeoutSeconds: 3
 - name: functional_tests
   description: Enable the execution of functional tests on stage
   type: boolean
@@ -246,10 +224,6 @@ modules:
      type: object
    - name: maps
      type: object
-   - name: liveness
-     type: object
-   - name: readiness
-     type: object
   definition:
     manifestSource: text
     account: spinnaker-service-account
@@ -303,14 +277,12 @@ modules:
                 name: "{{name}}"
                 volumeMounts: |
                   {% for secret in secrets %}
-                  - {% module mountVolume secname=secret.name secmount=secret.mount %}
+                  - {% module mountVolume secname=secret.name secmount=secret.mount subpath=secret.subpath %}
                   {% endfor %}
                 envFrom: |
                   {% for map in maps %}
                   - {% module configMap mapname=map.name %}
                   {% endfor %}
-                livenessProbe: "{{liveness}}"
-                readinessProbe: "{{readiness}}"
             restartPolicy: "Always"
             volumes: |
               {% for secret in secrets %}
@@ -328,9 +300,11 @@ modules:
   variables:
    - name: secname
    - name: secmount
+   - name: subpath
   definition:
     name: "{{secname}}"
     mountPath: "{{secmount}}"
+    subPath: "{{subpath}}"
 - id: secretMapping
   variables:
    - name: secname
