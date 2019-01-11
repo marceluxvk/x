@@ -119,7 +119,7 @@ stages:
    stageTimeoutMs: 60000
    manifestArtifactAccount: embedded-artifactports
    config: |
-      {% module kubemanifest name=service target="stage" ns=application config=config secrets=config.stage.secret maps=config.stage.configmap %}
+      {% module kubemanifest name=service target="stage" ns=application config=config secret=config.stage.secret maps=config.stage.configmap %}
  - id: Config Stage Ingress
    type: deployManifest
    stageTimeoutMs: 60000
@@ -242,7 +242,7 @@ modules:
    - name: ns
    - name: config
      type: object
-   - name: secrets
+   - name: secret
      type: object
    - name: maps
      type: object
@@ -301,10 +301,9 @@ modules:
               - image: "${ trigger[\"properties\"][\"ci.image\"] }"
                 imagePullPolicy: IfNotPresent
                 name: "{{name}}"
-                volumeMounts: |
-                  {% for secret in secrets %}
-                  - {% module mountVolume secname=secret.name secmount=secret.mount %}
-                  {% endfor %}
+                volumeMounts: 
+                  name: "config"
+                  mountPath: "/app/config"
                 envFrom: |
                   {% for map in maps %}
                   - {% module configMap mapname=map.name %}
@@ -312,10 +311,12 @@ modules:
                 livenessProbe: "{{liveness}}"
                 readinessProbe: "{{readiness}}"
             restartPolicy: "Always"
-            volumes: |
-              {% for secret in secrets %}
-              - {% module secretMapping secname=secret.name seccert=secret.secretName secitems=secret.items %}
-              {% endfor %}
+            volumes: 
+              - name: "config"
+                secrets:
+                  name: "{{secret.name}}"
+                  path: "/app/config"
+                  items: "{{secret.items}}"
 - id: portMapping
   variables:
    - name: svcport
@@ -324,23 +325,6 @@ modules:
     name: "{{svcname}}"
     port: "{{svcport}}" 
     targetPort: "{{svcport}}"
-- id: mountVolume
-  variables:
-   - name: secname
-   - name: secmount
-  definition:
-    name: "{{secname}}"
-    mountPath: "{{secmount}}"
-- id: secretMapping
-  variables:
-   - name: secname
-   - name: seccert
-   - name: secitems
-  definition:
-    name: "{{secname}}"
-    secret:
-        secretName: "{{seccert}}"
-        items: "{{secitems}}"
 - id: configMap
   variables:
    - name: mapname
