@@ -313,7 +313,8 @@ modules:
             restartPolicy: "Always"
             volumes: 
               - name: "config"
-                secrets:
+                defaultMode: 644
+                secret:
                   secretName: "{{secret.name}}"
                   items: "{{secret.items}}"
 - id: portMapping
