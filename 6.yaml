@@ -9,7 +9,6 @@ variables:
   - name: namespace
   - name: application
   - name: ports
-    type: string
     defaultValue:
       ports:
        - port: 8081
