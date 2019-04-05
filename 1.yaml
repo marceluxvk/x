@@ -46,7 +46,8 @@ stages:
           app:  "{{namespace}}"
         ports: |
          {% for port in ports %}
-          - "{{port}}"
+          - name: "{{port.name}}"
+            port: "{{port.port}}"
          {% endfor %}  
          
           
