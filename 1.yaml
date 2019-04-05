@@ -10,11 +10,10 @@ variables:
   - name: application
   - name: ports
     defaultValue:
-      ports:
-       - port: 8081
-         name: "http"
-       - port: 6568
-         name: "grpc"
+    - port: 8081
+      name: "http"
+    - port: 6568
+      name: "grpc"
 stages:
 - id: Configuring Service at Stage
   type: deployManifest
