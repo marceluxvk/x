@@ -45,6 +45,6 @@ stages:
         selector:
           app:  "{{namespace}}"
         ports: |
-          "{{ port }}"
+          "{{ ports }}"
          
           
