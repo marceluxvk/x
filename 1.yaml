@@ -8,8 +8,14 @@ protected: false
 variables: 
   - name: namespace
   - name: application
-  - name: http_port
-  - name: grpc_port
+  - name: ports
+    type: object
+    defaultValue:
+      ports:
+       - port: 8081
+         name: "http"
+       - port: 6568
+         name: "grpc"
 stages:
 - id: Configuring Service at Stage
   type: deployManifest
@@ -38,8 +44,9 @@ stages:
         type: "ClusterIP"
         selector:
           app:  "{{namespace}}"
-        ports:
-         - port: 8080,
-           protocol: "TCP"
-           targetPort: 8080
+        ports: |
+         {% for port in ports %}
+          - "{{port}}"
+         {% endfor %}  
+         
           
